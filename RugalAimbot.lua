@@ -1400,6 +1400,105 @@ function Brand:Draw()
     end
 end
 
+class "Braum"
+
+function Braum:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Braum:LoadSpells()
+    Q = { Range = 1000, Delay = 0.25, Width = 65, Speed = 1670}
+    R = { Range = 1250, Delay = 0.5, Width = 115, Speed = 1400}
+    W = { Range = 650}
+    E = { Range = 0}
+end
+
+function Braum:LoadMenu()
+	Braum = MenuElement({type = MENU, id = "Braum", name = "Rugal Aimbot "..myHero.charName})
+	Braum:MenuElement({type = MENU, id = "Spells", name = "Spells"})
+    Braum.Spells:MenuElement({id = "Q", name = "Q", key = string.byte("Q")})
+    Braum.Spells:MenuElement({id = "QSearch", name = "Q Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Braum.Spells:MenuElement({id = "W", name = "W", key = string.byte("W")})
+    Braum.Spells:MenuElement({id = "E", name = "E", key = string.byte("E")})
+    Braum.Spells:MenuElement({id = "R", name = "R", key = string.byte("R")})
+    Braum.Spells:MenuElement({id = "RSearch", name = "R Search Range", min = 50, max = 3500, value = 250, step = 10})
+	Braum:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Braum.Draw:MenuElement({id = "Q", name = "Q range", value = true})
+    Braum.Draw:MenuElement({id = "W", name = "W range", value = true})
+    Braum.Draw:MenuElement({id = "E", name = "E range", value = true})
+    Braum.Draw:MenuElement({id = "R", name = "R range", value = true})
+    Braum.Draw:MenuElement({id = "Search", name = "Search ranges", value = false})
+end
+
+function Braum:Tick()
+    self:Spells()
+end
+
+function Braum:Spells()
+	local target = GetTarget(3500)
+    if Braum.Spells.R:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Braum.Spells.RSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, R.Range, R.Delay, R.Speed, R.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= R.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_R, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_R, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_R, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+	if Braum.Spells.Q:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Braum.Spells.QSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_Q, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Braum.Spells.E:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_E)
+        EnableOrb(true)
+    end
+    if Braum.Spells.W:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_W)
+        EnableOrb(true)
+    end
+end
+
+function Braum:Draw()
+    if Braum.dead then return end
+    if Braum.Draw.Q:Value() then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Braum.Draw.W:Value() then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if Braum.Draw.E:Value() then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    if Braum.Draw.R:Value() then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    if Braum.Draw.Search:Value() then 
+        Draw.Circle(Game.mousePos(), Braum.Spells.QSearch:Value(), 1,  Draw.Color(255, 000, 000, 255))
+        Draw.Circle(Game.mousePos(), Braum.Spells.RSearch:Value(), 1,  Draw.Color(255, 255, 000, 000))
+    end
+end
+
 class "Caitlyn"
 
 function Caitlyn:__init()
