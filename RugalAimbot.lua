@@ -2484,6 +2484,696 @@ function Draven:Draw()
     end
 end
 
+class "Ekko"
+
+function Ekko:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Ekko:LoadSpells()
+    Q = { Range = 1075, Delay = 0.25, Speed = 1650, Width = 135}
+    W = { Range = 1600, Delay = 0.25, Speed = 1650, Width = 400}
+    E = { Range = 0}
+    R = { Range = 0}
+end
+
+function Ekko:LoadMenu()
+	Ekko = MenuElement({type = MENU, id = "Ekko", name = "Rugal Aimbot "..myHero.charName})
+	Ekko:MenuElement({type = MENU, id = "Spells", name = "Spells"})
+    Ekko.Spells:MenuElement({id = "Q", name = "Q", key = string.byte("Q")})
+    Ekko.Spells:MenuElement({id = "QSearch", name = "Q Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Ekko.Spells:MenuElement({id = "W", name = "W", key = string.byte("W")})
+    Ekko.Spells:MenuElement({id = "WSearch", name = "W Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Ekko.Spells:MenuElement({id = "E", name = "E", key = string.byte("E")})
+    Ekko.Spells:MenuElement({id = "R", name = "R", key = string.byte("R")})
+	Ekko:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Ekko.Draw:MenuElement({id = "Q", name = "Q range", value = true})
+    Ekko.Draw:MenuElement({id = "W", name = "W range", value = true})
+    Ekko.Draw:MenuElement({id = "E", name = "E range", value = true})
+    Ekko.Draw:MenuElement({id = "R", name = "R range", value = true})
+    Ekko.Draw:MenuElement({id = "Search", name = "Search ranges", value = false})
+end
+
+function Ekko:Tick()
+    self:Spells()
+end
+
+function Ekko:Spells()
+	local target = GetTarget(3500)
+    if Ekko.Spells.Q:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Ekko.Spells.QSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_Q, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Ekko.Spells.W:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Ekko.Spells.WSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, W.Range, W.Delay, W.Speed, W.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= W.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_W, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_W, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_W, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Ekko.Spells.E:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_E)
+        EnableOrb(true)
+    end
+    if Ekko.Spells.R:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_R)
+        EnableOrb(true)
+    end
+end
+
+function Ekko:Draw()
+    if myHero.dead then return end
+    if Ekko.Draw.Q:Value() then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Ekko.Draw.W:Value() then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if Ekko.Draw.E:Value() then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    if Ekko.Draw.R:Value() then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    if Ekko.Draw.Search:Value() then 
+        Draw.Circle(Game.mousePos(), Ekko.Spells.QSearch:Value(), 1,  Draw.Color(255, 000, 000, 255))
+        Draw.Circle(Game.mousePos(), Ekko.Spells.WSearch:Value(), 1,  Draw.Color(255, 000, 255, 000))
+    end
+end
+
+class "Evelynn"
+
+function Evelynn:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Evelynn:LoadSpells()
+    Q = { Range = 800, Delay = 0.25, Speed = 2200, Width = 35}
+    W = { Range = 1100 + myHero:GetSpellData(_W).level * 100}
+    E = { Range = 210}
+    R = { Range = 450, Delay = 0.35, Speed = mathhuge, Width = 180}
+end
+
+function Evelynn:LoadMenu()
+	Evelynn = MenuElement({type = MENU, id = "Evelynn", name = "Rugal Aimbot "..myHero.charName})
+	Evelynn:MenuElement({type = MENU, id = "Spells", name = "Spells"})
+    Evelynn.Spells:MenuElement({id = "Q", name = "Q", key = string.byte("Q")})
+    Evelynn.Spells:MenuElement({id = "QSearch", name = "Q Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Evelynn.Spells:MenuElement({id = "W", name = "W", key = string.byte("W")})
+    Evelynn.Spells:MenuElement({id = "WSearch", name = "W Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Evelynn.Spells:MenuElement({id = "E", name = "E", key = string.byte("E")})
+    Evelynn.Spells:MenuElement({id = "ESearch", name = "E Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Evelynn.Spells:MenuElement({id = "R", name = "R", key = string.byte("R")})
+    Evelynn.Spells:MenuElement({id = "RSearch", name = "R Search Range", min = 50, max = 3500, value = 250, step = 10})
+	Evelynn:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Evelynn.Draw:MenuElement({id = "Q", name = "Q range", value = true})
+    Evelynn.Draw:MenuElement({id = "W", name = "W range", value = true})
+    Evelynn.Draw:MenuElement({id = "E", name = "E range", value = true})
+    Evelynn.Draw:MenuElement({id = "R", name = "R range", value = true})
+    Evelynn.Draw:MenuElement({id = "Search", name = "Search ranges", value = false})
+end
+
+function Evelynn:Tick()
+    self:Spells()
+end
+
+function Evelynn:Spells()
+	local target = GetTarget(3500)
+    if Evelynn.Spells.Q:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Evelynn.Spells.QSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_Q, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Evelynn.Spells.R:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Evelynn.Spells.RSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, R.Range, R.Delay, R.Speed, R.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= R.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_R, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_R, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_R, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Evelynn.Spells.W:Value() then
+        if target and GetDistance(target.pos) < W.Range and GetDistance(target.pos,Game.mousePos()) < Evelynn.Spells.WSearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_W, target)
+            EnableOrb(true)
+        else
+            local foeminion = ClosestMinion(W.Range,foe)
+            if foeminion and GetDistance(foeminion.pos,Game.mousePos()) < Evelynn.Spells.WSearch:Value() then
+                EnableOrb(false)
+                Control.CastSpell(HK_W, foeminion)
+                EnableOrb(true)
+            else
+                local neutralminion = ClosestMinion(W.Range,neutral)
+                if neutralminion and GetDistance(neutralminion.pos,Game.mousePos()) < Evelynn.Spells.WSearch:Value() then
+                    EnableOrb(false)
+                    Control.CastSpell(HK_W, neutralminion)
+                    EnableOrb(true)
+                end
+            end
+        end
+    end
+    if Evelynn.Spells.E:Value() then
+        if target and GetDistance(target.pos) < E.Range and GetDistance(target.pos,Game.mousePos()) < Evelynn.Spells.ESearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_E, target)
+            EnableOrb(true)
+        else
+            local foeminion = ClosestMinion(E.Range,foe)
+            if foeminion and GetDistance(foeminion.pos,Game.mousePos()) < Evelynn.Spells.ESearch:Value() then
+                EnableOrb(false)
+                Control.CastSpell(HK_E, foeminion)
+                EnableOrb(true)
+            else
+                local neutralminion = ClosestMinion(E.Range,neutral)
+                if neutralminion and GetDistance(neutralminion.pos,Game.mousePos()) < Evelynn.Spells.ESearch:Value() then
+                    EnableOrb(false)
+                    Control.CastSpell(HK_E, neutralminion)
+                    EnableOrb(true)
+                end
+            end
+        end
+    end
+end
+
+function Evelynn:Draw()
+    if myHero.dead then return end
+    if Evelynn.Draw.Q:Value() then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Evelynn.Draw.W:Value() then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if Evelynn.Draw.E:Value() then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    if Evelynn.Draw.R:Value() then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    if Evelynn.Draw.Search:Value() then 
+        Draw.Circle(Game.mousePos(), Evelynn.Spells.QSearch:Value(), 1,  Draw.Color(255, 000, 000, 255))
+        Draw.Circle(Game.mousePos(), Evelynn.Spells.WSearch:Value(), 1,  Draw.Color(255, 000, 255, 000))
+        Draw.Circle(Game.mousePos(), Evelynn.Spells.ESearch:Value(), 1,  Draw.Color(255, 255, 255, 000))
+        Draw.Circle(Game.mousePos(), Evelynn.Spells.RSearch:Value(), 1,  Draw.Color(255, 255, 000, 000))
+    end
+end
+
+class "Ezreal"
+
+function Ezreal:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Ezreal:LoadSpells()
+    Q = { Range = 1150, Delay = 0.25, Speed = 2000, Width = 80}
+    W = { Range = 1000, Delay = 0.25, Speed = 1550, Width = 80}
+    E = { Range = 0}
+    R = { Range = 25000, Delay = 0.25, Speed = 2000, Width = 160}
+end
+
+function Ezreal:LoadMenu()
+	Ezreal = MenuElement({type = MENU, id = "Ezreal", name = "Rugal Aimbot "..myHero.charName})
+	Ezreal:MenuElement({type = MENU, id = "Spells", name = "Spells"})
+    Ezreal.Spells:MenuElement({id = "Q", name = "Q", key = string.byte("Q")})
+    Ezreal.Spells:MenuElement({id = "QSearch", name = "Q Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Ezreal.Spells:MenuElement({id = "W", name = "W", key = string.byte("W")})
+    Ezreal.Spells:MenuElement({id = "WSearch", name = "W Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Ezreal.Spells:MenuElement({id = "E", name = "E", key = string.byte("E")})
+    Ezreal.Spells:MenuElement({id = "R", name = "R", key = string.byte("R")})
+    Ezreal.Spells:MenuElement({id = "RSearch", name = "R Search Range", min = 50, max = 3500, value = 250, step = 10})
+	Ezreal:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Ezreal.Draw:MenuElement({id = "Q", name = "Q range", value = true})
+    Ezreal.Draw:MenuElement({id = "W", name = "W range", value = true})
+    Ezreal.Draw:MenuElement({id = "E", name = "E range", value = true})
+    Ezreal.Draw:MenuElement({id = "R", name = "R range", value = true})
+    Ezreal.Draw:MenuElement({id = "Search", name = "Search ranges", value = false})
+end
+
+function Ezreal:Tick()
+    self:Spells()
+end
+
+function Ezreal:Spells()
+	local target = GetTarget(3500)
+    if Ezreal.Spells.Q:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Ezreal.Spells.QSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_Q, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Ezreal.Spells.W:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Ezreal.Spells.WSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, W.Range, W.Delay, W.Speed, W.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= W.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_W, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_W, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_W, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Ezreal.Spells.R:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Ezreal.Spells.RSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, R.Range, R.Delay, R.Speed, R.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= R.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_R, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_R, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_R, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Ezreal.Spells.E:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_E)
+        EnableOrb(true)
+    end
+end
+
+function Ezreal:Draw()
+    if myHero.dead then return end
+    if Ezreal.Draw.Q:Value() then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Ezreal.Draw.W:Value() then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if Ezreal.Draw.E:Value() then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    if Ezreal.Draw.R:Value() then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    if Ezreal.Draw.Search:Value() then 
+        Draw.Circle(Game.mousePos(), Ezreal.Spells.QSearch:Value(), 1,  Draw.Color(255, 000, 000, 255))
+        Draw.Circle(Game.mousePos(), Ezreal.Spells.WSearch:Value(), 1,  Draw.Color(255, 000, 255, 000))
+        Draw.Circle(Game.mousePos(), Ezreal.Spells.RSearch:Value(), 1,  Draw.Color(255, 255, 000, 000))
+    end
+end
+
+class "FiddleSticks"
+
+function FiddleSticks:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function FiddleSticks:LoadSpells()
+    Q = { Range = 0, Delay = 0.25, Speed = mathhuge, Width = 0}
+    W = { Range = 0, Delay = 0.25, Speed = mathhuge, Width = 0}
+    E = { Range = 0, Delay = 0.25, Speed = mathhuge, Width = 0}
+    R = { Range = 0, Delay = 0.25, Speed = mathhuge, Width = 0}
+end
+
+function FiddleSticks:LoadMenu()
+	FiddleSticks = MenuElement({type = MENU, id = "FiddleSticks", name = "Rugal Aimbot "..myHero.charName})
+	FiddleSticks:MenuElement({type = MENU, id = "Spells", name = "Spells"})
+    FiddleSticks.Spells:MenuElement({id = "Q", name = "Q", key = string.byte("Q")})
+    FiddleSticks.Spells:MenuElement({id = "QSearch", name = "Q Search Range", min = 50, max = 3500, value = 250, step = 10})
+    FiddleSticks.Spells:MenuElement({id = "W", name = "W", key = string.byte("W")})
+    FiddleSticks.Spells:MenuElement({id = "WSearch", name = "W Search Range", min = 50, max = 3500, value = 250, step = 10})
+    FiddleSticks.Spells:MenuElement({id = "E", name = "E", key = string.byte("E")})
+    FiddleSticks.Spells:MenuElement({id = "ESearch", name = "E Search Range", min = 50, max = 3500, value = 250, step = 10})
+    FiddleSticks.Spells:MenuElement({id = "R", name = "R", key = string.byte("R")})
+	FiddleSticks:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    FiddleSticks.Draw:MenuElement({id = "Q", name = "Q range", value = true})
+    FiddleSticks.Draw:MenuElement({id = "W", name = "W range", value = true})
+    FiddleSticks.Draw:MenuElement({id = "E", name = "E range", value = true})
+    FiddleSticks.Draw:MenuElement({id = "R", name = "R range", value = true})
+    FiddleSticks.Draw:MenuElement({id = "Search", name = "Search ranges", value = false})
+end
+
+function FiddleSticks:Tick()
+    self:Spells()
+end
+
+function FiddleSticks:Spells()
+	local target = GetTarget(3500)
+    if FiddleSticks.Spells.Q:Value() then
+        if target and GetDistance(target.pos) < Q.Range and GetDistance(target.pos,Game.mousePos()) < FiddleSticks.Spells.QSearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_Q, target)
+            EnableOrb(true)
+        else
+            local foeminion = ClosestMinion(Q.Range,foe)
+            if foeminion and GetDistance(foeminion.pos,Game.mousePos()) < FiddleSticks.Spells.QSearch:Value() then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, foeminion)
+                EnableOrb(true)
+            else
+                local neutralminion = ClosestMinion(Q.Range,neutral)
+                if neutralminion and GetDistance(neutralminion.pos,Game.mousePos()) < FiddleSticks.Spells.QSearch:Value() then
+                    EnableOrb(false)
+                    Control.CastSpell(HK_Q, neutralminion)
+                    EnableOrb(true)
+                end
+            end
+        end
+    end
+    if FiddleSticks.Spells.W:Value() then
+        if target and GetDistance(target.pos) < W.Range and GetDistance(target.pos,Game.mousePos()) < FiddleSticks.Spells.WSearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_W, target)
+            EnableOrb(true)
+        else
+            local foeminion = ClosestMinion(W.Range,foe)
+            if foeminion and GetDistance(foeminion.pos,Game.mousePos()) < FiddleSticks.Spells.WSearch:Value() then
+                EnableOrb(false)
+                Control.CastSpell(HK_W, foeminion)
+                EnableOrb(true)
+            else
+                local neutralminion = ClosestMinion(W.Range,neutral)
+                if neutralminion and GetDistance(neutralminion.pos,Game.mousePos()) < FiddleSticks.Spells.WSearch:Value() then
+                    EnableOrb(false)
+                    Control.CastSpell(HK_W, neutralminion)
+                    EnableOrb(true)
+                end
+            end
+        end
+    end
+    if FiddleSticks.Spells.E:Value() then
+        if target and GetDistance(target.pos) < E.Range and GetDistance(target.pos,Game.mousePos()) < FiddleSticks.Spells.ESearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_E, target)
+            EnableOrb(true)
+        else
+            local foeminion = ClosestMinion(E.Range,foe)
+            if foeminion and GetDistance(foeminion.pos,Game.mousePos()) < FiddleSticks.Spells.ESearch:Value() then
+                EnableOrb(false)
+                Control.CastSpell(HK_E, foeminion)
+                EnableOrb(true)
+            else
+                local neutralminion = ClosestMinion(E.Range,neutral)
+                if neutralminion and GetDistance(neutralminion.pos,Game.mousePos()) < FiddleSticks.Spells.ESearch:Value() then
+                    EnableOrb(false)
+                    Control.CastSpell(HK_E, neutralminion)
+                    EnableOrb(true)
+                end
+            end
+        end
+    end
+    if FiddleSticks.Spells.R:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_R)
+        EnableOrb(true)
+    end
+end
+
+function FiddleSticks:Draw()
+    if myHero.dead then return end
+    if FiddleSticks.Draw.Q:Value() then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if FiddleSticks.Draw.W:Value() then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if FiddleSticks.Draw.E:Value() then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    if FiddleSticks.Draw.R:Value() then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    if FiddleSticks.Draw.Search:Value() then 
+        Draw.Circle(Game.mousePos(), FiddleSticks.Spells.QSearch:Value(), 1,  Draw.Color(255, 000, 000, 255))
+        Draw.Circle(Game.mousePos(), FiddleSticks.Spells.WSearch:Value(), 1,  Draw.Color(255, 000, 255, 000))
+        Draw.Circle(Game.mousePos(), FiddleSticks.Spells.ESearch:Value(), 1,  Draw.Color(255, 255, 255, 000))
+    end
+end
+
+class "Fiora"
+
+function Fiora:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Fiora:LoadSpells()
+    Q = { Range = 400, Delay = 0, Speed = 800, Width = 50}
+    W = { Range = 750, Delay = 0.75, Speed = mathhuge, Width = 85}
+    E = { Range = 0}
+    R = { Range = 500}
+end
+
+function Fiora:LoadMenu()
+	Fiora = MenuElement({type = MENU, id = "Fiora", name = "Rugal Aimbot "..myHero.charName})
+	Fiora:MenuElement({type = MENU, id = "Spells", name = "Spells"})
+    Fiora.Spells:MenuElement({id = "Q", name = "Q", key = string.byte("Q")})
+    Fiora.Spells:MenuElement({id = "QSearch", name = "Q Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Fiora.Spells:MenuElement({id = "W", name = "W", key = string.byte("W")})
+    Fiora.Spells:MenuElement({id = "WSearch", name = "W Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Fiora.Spells:MenuElement({id = "E", name = "E", key = string.byte("E")})
+    Fiora.Spells:MenuElement({id = "R", name = "R", key = string.byte("R")})
+    Fiora.Spells:MenuElement({id = "RSearch", name = "R Search Range", min = 50, max = 3500, value = 250, step = 10})
+	Fiora:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Fiora.Draw:MenuElement({id = "Q", name = "Q range", value = true})
+    Fiora.Draw:MenuElement({id = "W", name = "W range", value = true})
+    Fiora.Draw:MenuElement({id = "E", name = "E range", value = true})
+    Fiora.Draw:MenuElement({id = "R", name = "R range", value = true})
+    Fiora.Draw:MenuElement({id = "Search", name = "Search ranges", value = false})
+end
+
+function Fiora:Tick()
+    self:Spells()
+end
+
+function Fiora:Spells()
+	local target = GetTarget(3500)
+    if Fiora.Spells.Q:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Fiora.Spells.QSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_Q, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Fiora.Spells.W:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Fiora.Spells.WSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, W.Range, W.Delay, W.Speed, W.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= W.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_W, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_W, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_W, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Fiora.Spells.R:Value() then
+        if target and GetDistance(target.pos) < R.Range and GetDistance(target.pos,Game.mousePos()) < Fiora.Spells.RSearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_R, target)
+            EnableOrb(true)
+        else
+            local foeminion = ClosestMinion(R.Range,foe)
+            if foeminion and GetDistance(foeminion.pos,Game.mousePos()) < Fiora.Spells.RSearch:Value() then
+                EnableOrb(false)
+                Control.CastSpell(HK_R, foeminion)
+                EnableOrb(true)
+            else
+                local neutralminion = ClosestMinion(R.Range,neutral)
+                if neutralminion and GetDistance(neutralminion.pos,Game.mousePos()) < Fiora.Spells.RSearch:Value() then
+                    EnableOrb(false)
+                    Control.CastSpell(HK_R, neutralminion)
+                    EnableOrb(true)
+                end
+            end
+        end
+    end
+    if Fiora.Spells.E:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_E)
+        EnableOrb(true)
+    end
+end
+
+function Fiora:Draw()
+    if myHero.dead then return end
+    if Fiora.Draw.Q:Value() then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Fiora.Draw.W:Value() then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if Fiora.Draw.E:Value() then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    if Fiora.Draw.R:Value() then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    if Fiora.Draw.Search:Value() then 
+        Draw.Circle(Game.mousePos(), Fiora.Spells.QSearch:Value(), 1,  Draw.Color(255, 000, 000, 255))
+        Draw.Circle(Game.mousePos(), Fiora.Spells.WSearch:Value(), 1,  Draw.Color(255, 000, 255, 000))
+        Draw.Circle(Game.mousePos(), Fiora.Spells.RSearch:Value(), 1,  Draw.Color(255, 255, 000, 000))
+    end
+end
+
+class "Fizz"
+
+function Fizz:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Fizz:LoadSpells()
+    Q = { Range = 550}
+    W = { Range = 0}
+    E = { Range = 0}
+    R = { Range = 1300, Delay = 0.25, Speed = 1300, Width = 120}
+end
+
+function Fizz:LoadMenu()
+	Fizz = MenuElement({type = MENU, id = "Fizz", name = "Rugal Aimbot "..myHero.charName})
+	Fizz:MenuElement({type = MENU, id = "Spells", name = "Spells"})
+    Fizz.Spells:MenuElement({id = "Q", name = "Q", key = string.byte("Q")})
+    Fizz.Spells:MenuElement({id = "QSearch", name = "Q Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Fizz.Spells:MenuElement({id = "W", name = "W", key = string.byte("W")})
+    Fizz.Spells:MenuElement({id = "E", name = "E", key = string.byte("E")})
+    Fizz.Spells:MenuElement({id = "R", name = "R", key = string.byte("R")})
+    Fizz.Spells:MenuElement({id = "RSearch", name = "R Search Range", min = 50, max = 3500, value = 250, step = 10})
+	Fizz:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Fizz.Draw:MenuElement({id = "Q", name = "Q range", value = true})
+    Fizz.Draw:MenuElement({id = "W", name = "W range", value = true})
+    Fizz.Draw:MenuElement({id = "E", name = "E range", value = true})
+    Fizz.Draw:MenuElement({id = "R", name = "R range", value = true})
+    Fizz.Draw:MenuElement({id = "Search", name = "Search ranges", value = false})
+end
+
+function Fizz:Tick()
+    self:Spells()
+end
+
+function Fizz:Spells()
+	local target = GetTarget(3500)
+    if Fizz.Spells.R:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Fizz.Spells.RSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, R.Range, R.Delay, R.Speed, R.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= R.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_R, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_R, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_R, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Fizz.Spells.Q:Value() then
+        if target and GetDistance(target.pos) < Q.Range and GetDistance(target.pos,Game.mousePos()) < Fizz.Spells.QSearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_Q, target)
+            EnableOrb(true)
+        else
+            local foeminion = ClosestMinion(Q.Range,foe)
+            if foeminion and GetDistance(foeminion.pos,Game.mousePos()) < Fizz.Spells.QSearch:Value() then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, foeminion)
+                EnableOrb(true)
+            else
+                local neutralminion = ClosestMinion(Q.Range,neutral)
+                if neutralminion and GetDistance(neutralminion.pos,Game.mousePos()) < Fizz.Spells.QSearch:Value() then
+                    EnableOrb(false)
+                    Control.CastSpell(HK_Q, neutralminion)
+                    EnableOrb(true)
+                end
+            end
+        end
+    end
+	if Fizz.Spells.W:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_W)
+        EnableOrb(true)
+    end
+    if Fizz.Spells.E:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_E)
+        EnableOrb(true)
+    end
+end
+
+function Fizz:Draw()
+    if myHero.dead then return end
+    if Fizz.Draw.Q:Value() then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Fizz.Draw.W:Value() then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if Fizz.Draw.E:Value() then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    if Fizz.Draw.R:Value() then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    if Fizz.Draw.Search:Value() then 
+        Draw.Circle(Game.mousePos(), Fizz.Spells.QSearch:Value(), 1,  Draw.Color(255, 000, 000, 255))
+        Draw.Circle(Game.mousePos(), Fizz.Spells.RSearch:Value(), 1,  Draw.Color(255, 255, 000, 000))
+    end
+end
+
 local loaded = false
 Callback.Add("Load", function()
     if loaded == false then
