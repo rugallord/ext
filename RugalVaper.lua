@@ -519,7 +519,7 @@ function Jayce:Tick()
     if mode == "Clear" and Jayce.Clear.T:Value() then
         if form == "Ranged" then
             local EQtarget = GetClearMinion(EQ.Range)
-            if EQtarget and Jayce.Cleyar.EQ:Value() and Ready(_Q) then
+            if EQtarget and Jayce.Clear.EQ:Value() and Ready(_Q) then
                 self:CastE(EQtarget)
                 self:CastEQ(EQtarget)
             end
