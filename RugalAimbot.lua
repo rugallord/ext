@@ -2583,6 +2583,212 @@ function Ekko:Draw()
     end
 end
 
+class "Elise"
+
+function Elise:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Elise:LoadSpells()
+    Q = { Range = 625}
+    W = { Range = 950}
+    E = { Range = 1075, Delay = 0.25, Speed = 1600, Width = 55}
+    Q2 = { Range = 475}
+    W2 = { Range = 0}
+    E2 = { Range = 750}
+    R = { Range = 0}
+end
+
+function Elise:LoadMenu()
+	Elise = MenuElement({type = MENU, id = "Elise", name = "Rugal Aimbot "..myHero.charName})
+	Elise:MenuElement({type = MENU, id = "Spells", name = "Spells"})
+    Elise.Spells:MenuElement({id = "Q", name = "Q", key = string.byte("Q")})
+    Elise.Spells:MenuElement({id = "QSearch", name = "Q Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Elise.Spells:MenuElement({id = "W", name = "W", key = string.byte("W")})
+    Elise.Spells:MenuElement({id = "WSearch", name = "W Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Elise.Spells:MenuElement({id = "E", name = "E", key = string.byte("E")})
+    Elise.Spells:MenuElement({id = "ESearch", name = "E Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Elise.Spells:MenuElement({id = "R", name = "R", key = string.byte("R")})
+	Elise:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Elise.Draw:MenuElement({id = "Q", name = "Q range", value = true})
+    Elise.Draw:MenuElement({id = "W", name = "W range", value = true})
+    Elise.Draw:MenuElement({id = "E", name = "E range", value = true})
+    Elise.Draw:MenuElement({id = "R", name = "R range", value = true})
+    Elise.Draw:MenuElement({id = "Search", name = "Search ranges", value = false})
+end
+
+function Elise:Tick()
+    local form = self:CurrentForm()
+    if form == "Human" then
+        self:HumanSpells()
+    elseif form == "Spider" then
+        self:SpiderSpells()
+    end
+end
+
+function Elise:CurrentForm()
+    if myHero:GetSpellData(_R).name == "EliseR" then
+        return "Human"
+    else
+        return "Spider"
+    end
+end
+
+function Elise:HumanSpells()
+	local target = GetTarget(3500)
+    if Elise.Spells.E:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Elise.Spells.ESearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, E.Range, E.Delay, E.Speed, E.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= E.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_E, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_E, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_E, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Elise.Spells.Q:Value() then
+        if target and GetDistance(target.pos) < Q.Range and GetDistance(target.pos,Game.mousePos()) < Elise.Spells.QSearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_Q, target)
+            EnableOrb(true)
+        else
+            local foeminion = ClosestMinion(Q.Range,foe)
+            if foeminion and GetDistance(foeminion.pos,Game.mousePos()) < Elise.Spells.QSearch:Value() then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, foeminion)
+                EnableOrb(true)
+            else
+                local neutralminion = ClosestMinion(Q.Range,neutral)
+                if neutralminion and GetDistance(neutralminion.pos,Game.mousePos()) < Elise.Spells.QSearch:Value() then
+                    EnableOrb(false)
+                    Control.CastSpell(HK_Q, neutralminion)
+                    EnableOrb(true)
+                end
+            end
+        end
+    end
+    if Elise.Spells.W:Value() then
+        if target and GetDistance(target.pos) < W.Range and GetDistance(target.pos,Game.mousePos()) < Elise.Spells.WSearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_W, target)
+            EnableOrb(true)
+        else
+            local foeminion = ClosestMinion(W.Range,foe)
+            if foeminion and GetDistance(foeminion.pos,Game.mousePos()) < Elise.Spells.WSearch:Value() then
+                EnableOrb(false)
+                Control.CastSpell(HK_W, foeminion)
+                EnableOrb(true)
+            else
+                local neutralminion = ClosestMinion(W.Range,neutral)
+                if neutralminion and GetDistance(neutralminion.pos,Game.mousePos()) < Elise.Spells.WSearch:Value() then
+                    EnableOrb(false)
+                    Control.CastSpell(HK_W, neutralminion)
+                    EnableOrb(true)
+                end
+            end
+        end
+    end
+    if Elise.Spells.R:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_R)
+        EnableOrb(true)
+    end
+end
+
+function Elise:SpiderSpells()
+	local target = GetTarget(3500)
+    if Elise.Spells.Q:Value() then
+        if target and GetDistance(target.pos) < Q2.Range and GetDistance(target.pos,Game.mousePos()) < Elise.Spells.QSearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_Q, target)
+            EnableOrb(true)
+        else
+            local foeminion = ClosestMinion(Q2.Range,foe)
+            if foeminion and GetDistance(foeminion.pos,Game.mousePos()) < Elise.Spells.QSearch:Value() then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, foeminion)
+                EnableOrb(true)
+            else
+                local neutralminion = ClosestMinion(Q2.Range,neutral)
+                if neutralminion and GetDistance(neutralminion.pos,Game.mousePos()) < Elise.Spells.QSearch:Value() then
+                    EnableOrb(false)
+                    Control.CastSpell(HK_Q, neutralminion)
+                    EnableOrb(true)
+                end
+            end
+        end
+    end
+    if Elise.Spells.E:Value() and not myHero:GetSpellData(_E).toggleState ~= 2 then
+        if target and GetDistance(target.pos) < E.Range and GetDistance(target.pos,Game.mousePos()) < Elise.Spells.ESearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_E, target)
+            EnableOrb(true)
+        else
+            local foeminion = ClosestMinion(E.Range,foe)
+            if foeminion and GetDistance(foeminion.pos,Game.mousePos()) < Elise.Spells.ESearch:Value() then
+                EnableOrb(false)
+                Control.CastSpell(HK_E, foeminion)
+                EnableOrb(true)
+            else
+                local neutralminion = ClosestMinion(E.Range,neutral)
+                if neutralminion and GetDistance(neutralminion.pos,Game.mousePos()) < Elise.Spells.ESearch:Value() then
+                    EnableOrb(false)
+                    Control.CastSpell(HK_E, neutralminion)
+                    EnableOrb(true)
+                end
+            end
+        end
+    end
+	if Elise.Spells.W:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_W)
+        EnableOrb(true)
+    end
+    if Elise.Spells.E:Value() and myHero:GetSpellData(_E).toggleState ~= 2 then
+        EnableOrb(false)
+        Control.CastSpell(HK_E)
+        EnableOrb(true)
+    end
+    if Elise.Spells.R:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_R)
+        EnableOrb(true)
+    end
+end
+
+function Elise:Draw()
+    if myHero.dead then return end
+    local form = self:CurrentForm()
+    if form == "Human" then
+        if Elise.Draw.Q:Value() then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+        if Elise.Draw.W:Value() then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+        if Elise.Draw.E:Value() then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+        if Elise.Draw.R:Value() then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    elseif form == "Spider" then
+        if Elise.Draw.Q:Value() then Draw.Circle(myHero.pos, Q2.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+        if Elise.Draw.W:Value() then Draw.Circle(myHero.pos, W2.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+        if Elise.Draw.E:Value() then Draw.Circle(myHero.pos, E2.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+        if Elise.Draw.R:Value() then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    end
+    if Elise.Draw.Search:Value() then 
+        Draw.Circle(Game.mousePos(), Elise.Spells.QSearch:Value(), 1,  Draw.Color(255, 000, 000, 255))
+        Draw.Circle(Game.mousePos(), Elise.Spells.WSearch:Value(), 1,  Draw.Color(255, 000, 255, 000))
+        Draw.Circle(Game.mousePos(), Elise.Spells.ESearch:Value(), 1,  Draw.Color(255, 255, 255, 000))
+        Draw.Circle(Game.mousePos(), Elise.Spells.RSearch:Value(), 1,  Draw.Color(255, 255, 000, 000))
+    end
+end
+
 class "Evelynn"
 
 function Evelynn:__init()
