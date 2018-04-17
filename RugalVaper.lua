@@ -8,15 +8,15 @@ local mathpow = math.pow
 local mathmax = math.max
 local mathfloor = math.floor
 
+local function Ready(slot)
+    return Game.CanUseSpell(slot) == 0
+end
+
 local function GetDistanceSqr(Pos1, Pos2)
     local Pos2 = Pos2 or myHero.pos
     local dx = Pos1.x - Pos2.x
     local dz = (Pos1.z or Pos1.y) - (Pos2.z or Pos2.y)
     return dx^2 + dz^2
-end
-
-local function Ready(slot)
-    return Game.CanUseSpell(slot) == 0
 end
 
 local function GetDistance(Pos1, Pos2)
@@ -144,6 +144,11 @@ local function Hp(source)
     return source.health/source.maxHealth * 100
 end
 
+local function Mana(source)
+    local source = source or myHero
+    return source.mana/source.maxMana * 100
+end
+
 class "DrMundo"
 
 function DrMundo:__init()
@@ -162,41 +167,60 @@ end
 
 function DrMundo:LoadMenu()
 	DrMundo = MenuElement({type = MENU, id = "DrMundo", name = "Rugal Vaper "..myHero.charName})
-    DrMundo:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("T"), toggle = true, value = true})
     DrMundo:MenuElement({type = MENU, id = "Combo", name = "Combo"})
     DrMundo.Combo:MenuElement({id = "Q", name = "Q", value = true})
     DrMundo.Combo:MenuElement({id = "W", name = "W", value = true})
     DrMundo.Combo:MenuElement({id = "E", name = "E", value = true})
     DrMundo:MenuElement({type = MENU, id = "Harass", name = "Harass"})
+    DrMundo.Harass:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("S"), toggle = true, value = true})
+    DrMundo.Harass:MenuElement({id = "AQ", name = "Auto Q", value = true})
     DrMundo.Harass:MenuElement({id = "Q", name = "Q", value = true})
     DrMundo.Harass:MenuElement({id = "W", name = "W", value = true})
     DrMundo.Harass:MenuElement({id = "E", name = "E", value = true})
     DrMundo:MenuElement({type = MENU, id = "Clear", name = "Clear"})
+    DrMundo.Clear:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
     DrMundo.Clear:MenuElement({id = "Q", name = "Q", value = true})
     DrMundo.Clear:MenuElement({id = "W", name = "W", value = true})
     DrMundo.Clear:MenuElement({id = "E", name = "E", value = true})
     DrMundo:MenuElement({type = MENU, id = "Lasthit", name = "Lasthit"})
+    DrMundo.Lasthit:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
     DrMundo.Lasthit:MenuElement({id = "Q", name = "Q", value = true})
     DrMundo:MenuElement({type = MENU, id = "Flee", name = "Flee"})
     DrMundo.Flee:MenuElement({id = "Q", name = "Q", value = true})
     DrMundo:MenuElement({type = MENU, id = "Lifesaver", name = "Life Saver"})
     DrMundo.Lifesaver:MenuElement({id = "R", name = "R", value = true})
     DrMundo.Lifesaver:MenuElement({id = "HP", name = "Hp threshold", value = 15, min = -1, max = 101})
-    DrMundo.Lifesaver:MenuElement({id = "Info", name = "Does not obey toggle", type = SPACE})
 	DrMundo:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
     DrMundo.Draw:MenuElement({id = "Q", name = "Q range", value = true})
     DrMundo.Draw:MenuElement({id = "W", name = "W range", value = true})
-    DrMundo.Draw:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
-    DrMundo.Draw:MenuElement({id = "xPos", name = "Text X Position", value = 0, min = -300, max = 300, step = 10})
-    DrMundo.Draw:MenuElement({id = "yPos", name = "Text Y Position", value = 0, min = -300, max = 300, step = 10})
+    DrMundo.Draw:MenuElement({id = "Harass", name = "Harass Status", type = MENU})
+    DrMundo.Draw.Harass:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    DrMundo.Draw.Harass:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    DrMundo.Draw.Harass:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    DrMundo.Draw.Harass:MenuElement({id = "yPos", name = "Text Y Position", value = -140, min = -1000, max = 1000, step = 10})
+    DrMundo.Draw:MenuElement({id = "Clear", name = "Clear Status", type = MENU})
+    DrMundo.Draw.Clear:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    DrMundo.Draw.Clear:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    DrMundo.Draw.Clear:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    DrMundo.Draw.Clear:MenuElement({id = "yPos", name = "Text Y Position", value = -130, min = -1000, max = 1000, step = 10})
+    DrMundo.Draw:MenuElement({id = "Lasthit", name = "Lasthit Status", type = MENU})
+    DrMundo.Draw.Lasthit:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    DrMundo.Draw.Lasthit:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    DrMundo.Draw.Lasthit:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    DrMundo.Draw.Lasthit:MenuElement({id = "yPos", name = "Text Y Position", value = -120, min = -1000, max = 1000, step = 10})
 end
 
 function DrMundo:Tick()
     if Hp() < DrMundo.Lifesaver.HP:Value() and DrMundo.Lifesaver.R:Value() then
         self:CastR()
     end
+    if DrMundo.Harass.T:Value() then
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and DrMundo.Harass.AQ:Value() then
+            self:CastQ(Qtarget)
+        end
+    end
     local mode = GetMode()
-    if DrMundo.T:Value() == false then return end
     if mode == "Combo" then
         local Qtarget = GetTarget(Q.Range)
         if Qtarget and DrMundo.Combo.Q:Value() then
@@ -211,7 +235,7 @@ function DrMundo:Tick()
             self:CastE()
         end
     end
-    if mode == "Harass" then
+    if mode == "Harass" and DrMundo.Harass.T:Value() then
         local Qtarget = GetTarget(Q.Range)
         if Qtarget and DrMundo.Harass.Q:Value() then
             self:CastQ(Qtarget)
@@ -225,7 +249,7 @@ function DrMundo:Tick()
             self:CastE()
         end
     end
-    if mode == "Clear" then
+    if mode == "Clear" and DrMundo.Clear.T:Value() then
         local Qtarget = GetClearMinion(Q.Range)
         if Qtarget and DrMundo.Clear.Q:Value() then
             self:CastQMinion(Qtarget)
@@ -239,9 +263,9 @@ function DrMundo:Tick()
             self:CastE()
         end
     end
-    if mode == "Lasthit" or mode == "LastHit" then
+    if (mode == "Lasthit" or mode == "LastHit") and DrMundo.Lasthit.T:Value() then
         local Qtarget = self:GetQMinion()
-        if Qtarget and DrMundo.Lasthit.Q:Value() then
+        if Qtarget and DrMundo.Lasthit.Q:Value() and GetDistance(Qtarget.pos) > 400 then
             self:CastQMinion(Qtarget)
         end
     end
@@ -270,7 +294,7 @@ function DrMundo:CastQMinion(target)
 	if Ready(_Q) then
         if target then
             local pred = target:GetPrediction(Q.Speed, Q.Delay)
-            if target:GetCollision(Q.Width, Q.Speed, Q.Delay) == 1 then
+            if target:GetCollision(Q.Width, Q.Speed, Q.Delay) <= 1 then
                 Control.CastSpell(HK_Q, pred)
             end
         end
@@ -317,154 +341,269 @@ function DrMundo:Draw()
     if DrMundo.Draw.Q:Value() and Ready(_Q) then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
     if DrMundo.Draw.W:Value() and Ready(_W) then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
     local textPos = myHero.pos:To2D()
-	local size = DrMundo.Draw.Size:Value()
-	local xPos = DrMundo.Draw.xPos:Value()
-	local yPos = DrMundo.Draw.yPos:Value()
-    if DrMundo.T:Value() then
-		Draw.Text("SCRIPT ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
-	else
-		Draw.Text("SCRIPT OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+    if DrMundo.Draw.Harass.Text:Value() then
+        local size = DrMundo.Draw.Harass.Size:Value()
+	    local xPos = DrMundo.Draw.Harass.xPos:Value()
+	    local yPos = DrMundo.Draw.Harass.yPos:Value()
+        if DrMundo.Harass.T:Value() then
+		    Draw.Text("HARASS ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("HARASS OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+    if DrMundo.Draw.Clear.Text:Value() then
+        local size = DrMundo.Draw.Clear.Size:Value()
+	    local xPos = DrMundo.Draw.Clear.xPos:Value()
+	    local yPos = DrMundo.Draw.Clear.yPos:Value()
+        if DrMundo.Clear.T:Value() then
+		    Draw.Text("CLEAR ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("CLEAR OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+    if DrMundo.Draw.Lasthit.Text:Value() then
+        local size = DrMundo.Draw.Lasthit.Size:Value()
+	    local xPos = DrMundo.Draw.Lasthit.xPos:Value()
+	    local yPos = DrMundo.Draw.Lasthit.yPos:Value()
+        if DrMundo.Lasthit.T:Value() then
+		    Draw.Text("LASTHIT ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("LASTHIT OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
 	end
 end
 
-class "Rumble"
+class "Jayce"
 
-function Rumble:__init()
+function Jayce:__init()
 	self:LoadSpells()
 	self:LoadMenu()
 	Callback.Add("Tick", function() self:Tick() end)
 	Callback.Add("Draw", function() self:Draw() end)
 end
 
-function Rumble:LoadSpells()
-    Q = { Range = 600}
-    W = { Range = 600}
-    E = { Range = 850, Delay = 0.25, Width = 70, Speed = 2000}
-    R = { Range = 1700, Delay = 0.585, Width = 130, Speed = 1600}
+function Jayce:LoadSpells()
+    Q = { Range = 1050, Delay = 0.25, Width = 75, Speed = 1450}
+    W = { Range = myHero.range}
+    E = { Range = 650}
+    EQ = { Range = 1470, Delay = 0.25, Width = 105, Speed = 1890}
+    Q2 = { Range = 600}
+    W2 = { Range = 285}
+    E2 = { Range = 240}
+    R = { Range = 0}
 end
 
-function Rumble:LoadMenu()
-	Rumble = MenuElement({type = MENU, id = "Rumble", name = "Rugal Vaper "..myHero.charName})
-    Rumble:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("T"), toggle = true, value = true})
-    Rumble:MenuElement({type = MENU, id = "Combo", name = "Combo"})
-    Rumble.Combo:MenuElement({id = "Q", name = "Q", value = true})
-    Rumble.Combo:MenuElement({id = "W", name = "W", value = true})
-    Rumble.Combo:MenuElement({id = "E", name = "E", value = true})
-    Rumble:MenuElement({type = MENU, id = "Harass", name = "Harass"})
-    Rumble.Harass:MenuElement({id = "Q", name = "Q", value = true})
-    Rumble.Harass:MenuElement({id = "W", name = "W", value = true})
-    Rumble.Harass:MenuElement({id = "E", name = "E", value = true})
-    Rumble:MenuElement({type = MENU, id = "Clear", name = "Clear"})
-    Rumble.Clear:MenuElement({id = "Q", name = "Q", value = true})
-    Rumble.Clear:MenuElement({id = "E", name = "E", value = true})
-    Rumble:MenuElement({type = MENU, id = "Lasthit", name = "Lasthit"})
-    Rumble.Lasthit:MenuElement({id = "E", name = "E", value = true})
-    Rumble:MenuElement({type = MENU, id = "Flee", name = "Flee"})
-    Rumble.Flee:MenuElement({id = "W", name = "W", value = true})
-    Rumble.Flee:MenuElement({id = "E", name = "E", value = true})
-    Rumble:MenuElement({type = MENU, id = "Ultimate", name = "Ultimate"})
-    Rumble.Ultimate:MenuElement({id = "R", name = "R", key = string.byte("S")})
-    Rumble:MenuElement({type = MENU, id = "Heat", name = "Heat"})
-    Rumble.Heat:MenuElement({id = "N", name = "Block overheat", value = true})
-	Rumble:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
-    Rumble.Draw:MenuElement({id = "Q", name = "Q range", value = true})
-    Rumble.Draw:MenuElement({id = "E", name = "E range", value = true})
-    Rumble.Draw:MenuElement({id = "R", name = "R range", value = true})
-    Rumble.Draw:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
-    Rumble.Draw:MenuElement({id = "xPos", name = "Text X Position", value = 0, min = -300, max = 300, step = 10})
-    Rumble.Draw:MenuElement({id = "yPos", name = "Text Y Position", value = 0, min = -300, max = 300, step = 10})
+function Jayce:LoadMenu()
+	Jayce = MenuElement({type = MENU, id = "Jayce", name = "Rugal Vaper "..myHero.charName})
+    Jayce:MenuElement({type = MENU, id = "Combo", name = "Combo"})
+    Jayce.Combo:MenuElement({id = "Q", name = "Q", value = true})
+    Jayce.Combo:MenuElement({id = "W", name = "W", value = true})
+    Jayce.Combo:MenuElement({id = "EQ", name = "EQ", value = true})
+    Jayce.Combo:MenuElement({id = "Q2", name = "Melee Q", value = true})
+    Jayce.Combo:MenuElement({id = "W2", name = "Melee W", value = true})
+    Jayce.Combo:MenuElement({id = "E2", name = "Melee E", value = true})
+    Jayce:MenuElement({type = MENU, id = "Harass", name = "Harass"})
+    Jayce.Harass:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("S"), toggle = true, value = true})
+    Jayce.Harass:MenuElement({id = "AQ", name = "Auto Q", value = true})
+    Jayce.Harass:MenuElement({id = "AEQ", name = "Auto EQ", value = true})
+    Jayce.Harass:MenuElement({id = "Q", name = "Q", value = true})
+    Jayce.Harass:MenuElement({id = "W", name = "W", value = true})
+    Jayce.Harass:MenuElement({id = "EQ", name = "EQ", value = true})
+    Jayce.Harass:MenuElement({id = "Q2", name = "Melee Q", value = true})
+    Jayce.Harass:MenuElement({id = "W2", name = "Melee W", value = true})
+    Jayce.Harass:MenuElement({id = "E2", name = "Melee E", value = true})
+    Jayce:MenuElement({type = MENU, id = "Clear", name = "Clear"})
+    Jayce.Clear:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
+    Jayce.Clear:MenuElement({id = "Q", name = "Q", value = true})
+    Jayce.Clear:MenuElement({id = "W", name = "W", value = true})
+    Jayce.Clear:MenuElement({id = "EQ", name = "EQ", value = true})
+    Jayce.Clear:MenuElement({id = "Q2", name = "Melee Q", value = true})
+    Jayce.Clear:MenuElement({id = "W2", name = "Melee W", value = true})
+    Jayce.Clear:MenuElement({id = "E2", name = "Melee E", value = true})
+    Jayce:MenuElement({type = MENU, id = "Flee", name = "Flee"})
+    Jayce.Flee:MenuElement({id = "E", name = "E", value = true})
+    Jayce.Flee:MenuElement({id = "E2", name = "Melee E", value = true})
+	Jayce:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Jayce.Draw:MenuElement({id = "Q", name = "Q range", value = true})
+    Jayce.Draw:MenuElement({id = "W", name = "W range", value = true})
+    Jayce.Draw:MenuElement({id = "E", name = "E range", value = true})
+    Jayce.Draw:MenuElement({id = "Harass", name = "Harass Status", type = MENU})
+    Jayce.Draw.Harass:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Jayce.Draw.Harass:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Jayce.Draw.Harass:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Jayce.Draw.Harass:MenuElement({id = "yPos", name = "Text Y Position", value = -140, min = -1000, max = 1000, step = 10})
+    Jayce.Draw:MenuElement({id = "Clear", name = "Clear Status", type = MENU})
+    Jayce.Draw.Clear:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Jayce.Draw.Clear:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Jayce.Draw.Clear:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Jayce.Draw.Clear:MenuElement({id = "yPos", name = "Text Y Position", value = -130, min = -1000, max = 1000, step = 10})
 end
 
-function Rumble:Tick()
+function Jayce:Tick()
+    local form = self:CurrentForm()
+    if Jayce.Harass.T:Value() then
+        if form == "Ranged" then
+            local EQtarget = GetTarget(EQ.Range)
+            if EQtarget and Jayce.Harass.AEQ:Value() and Ready(_Q) then
+                local Evector = 
+                self:CastE(EQtarget)
+                self:CastEQ(EQtarget)
+            end
+            local Qtarget = GetTarget(Q.Range)
+            if Qtarget and Jayce.Harass.AQ:Value() then
+                self:CastQ(Qtarget)
+            end
+        end
+    end
     local mode = GetMode()
-    if Rumble.T:Value() == false then return end
     if mode == "Combo" then
-        local Etarget = GetTarget(E.Range)
-        if Etarget and Rumble.Combo.E:Value() then
-            self:CastE(Etarget)
-        end
-        local Wtarget = GetTarget(W.Range) 
-        if Wtarget and Rumble.Combo.W:Value() then
-            self:CastW()
-        end
-        local Qtarget = GetTarget(Q.Range) 
-        if Qtarget and Rumble.Combo.Q:Value() then
-            self:CastQ(Qtarget)
-        end
-    end
-    if mode == "Harass" then
-        local Etarget = GetTarget(E.Range)
-        if Etarget and Rumble.Harass.E:Value() then
-            self:CastE(Etarget)
-        end
-        local Wtarget = GetTarget(W.Range) 
-        if Wtarget and Rumble.Harass.W:Value() then
-            self:CastW()
-        end
-        local Qtarget = GetTarget(Q.Range) 
-        if Qtarget and Rumble.Harass.Q:Value() then
-            self:CastQ(Qtarget)
-        end
-    end
-    if mode == "Clear" then
-        local Etarget = GetClearMinion(E.Range)
-        if Etarget and Rumble.Clear.E:Value() then
-            self:CastEMinion(Etarget)
-        end
-        local Qtarget = GetClearMinion(Q.Range)
-        if Qtarget and Rumble.Clear.Q:Value() then
-            self:CastQ(Qtarget)
+        if form == "Ranged" then
+            local EQtarget = GetTarget(EQ.Range)
+            if EQtarget and Jayce.Combo.EQ:Value() and Ready(_Q) then
+                self:CastE(EQtarget)
+                self:CastEQ(EQtarget)
+            end
+            local Qtarget = GetTarget(Q.Range)
+            if Qtarget and Jayce.Combo.Q:Value() then
+                self:CastQ(Qtarget)
+            end
+            local Wtarget = GetTarget(W.Range) 
+            if Wtarget and Jayce.Combo.W:Value() then
+                self:CastW()
+            end
+        else
+            local Wtarget = GetTarget(W2.Range) 
+            if Wtarget and Jayce.Combo.W2:Value() then
+                self:CastW()
+            end
+            local Etarget = GetTarget(E2.Range)
+            if Etarget and Jayce.Combo.E2:Value() then
+                self:CastE2(Etarget)
+            end
+            local Qtarget = GetTarget(Q2.Range)
+            if Qtarget and Jayce.Combo.Q2:Value() then
+                self:CastQ2(Qtarget)
+            end
         end
     end
-    if mode == "Lasthit" or mode == "LastHit" then
-        local Etarget = self:GetEMinion()
-        if Etarget and Rumble.Lasthit.E:Value() then
-            self:CastEMinion(Etarget)
+    if mode == "Harass" and Jayce.Harass.T:Value() then
+        if form == "Ranged" then
+            local EQtarget = GetTarget(EQ.Range)
+            if EQtarget and Jayce.Harass.EQ:Value() and Ready(_Q) then
+                self:CastE(EQtarget)
+                self:CastEQ(EQtarget)
+            end
+            local Qtarget = GetTarget(Q.Range)
+            if Qtarget and Jayce.Harass.Q:Value() then
+                self:CastQ(Qtarget)
+            end
+            local Wtarget = GetTarget(W.Range) 
+            if Wtarget and Jayce.Harass.W:Value() then
+                self:CastW()
+            end
+        else
+            local Wtarget = GetTarget(W2.Range) 
+            if Wtarget and Jayce.Harass.W2:Value() then
+                self:CastW()
+            end
+            local Etarget = GetTarget(E2.Range)
+            if Etarget and Jayce.Harass.E2:Value() then
+                self:CastE2(Etarget)
+            end
+            local Qtarget = GetTarget(Q2.Range)
+            if Qtarget and Jayce.Harass.Q2:Value() then
+                self:CastQ2(Qtarget)
+            end
+        end
+    end
+    if mode == "Clear" and Jayce.Clear.T:Value() then
+        if form == "Ranged" then
+            local EQtarget = GetClearMinion(EQ.Range)
+            if EQtarget and Jayce.Cleyar.EQ:Value() and Ready(_Q) then
+                self:CastE(EQtarget)
+                self:CastEQ(EQtarget)
+            end
+            local Qtarget = GetClearMinion(Q.Range)
+            if Qtarget and Jayce.Clear.Q:Value() then
+                self:CastQ(Qtarget)
+            end
+            local Wtarget = GetClearMinion(W.Range) 
+            if Wtarget and Jayce.Clear.W:Value() then
+                self:CastW()
+            end
+        else
+            local Wtarget = GetClearMinion(W2.Range) 
+            if Wtarget and Jayce.Clear.W2:Value() then
+                self:CastW()
+            end
+            local Etarget = GetClearMinion(E2.Range)
+            if Etarget and Jayce.Clear.E2:Value() then
+                self:CastE2(Etarget)
+            end
+            local Qtarget = GetClearMinion(Q2.Range)
+            if Qtarget and Jayce.Clear.Q2:Value() then
+                self:CastQ2(Qtarget)
+            end
         end
     end
     if mode == "Flee" then
-        local Etarget = ClosestHero(E.Range,foe)
-        if Etarget and Rumble.Flee.E:Value() then
-            self:CastE(Etarget)
+        if form == "Ranged" then
+            local vec = myHero.pos:Extended(mousePos, 200)
+            if Jayce.Flee.E:Value() then
+                self:CastE(vec)
+            end
+        else
+            local Etarget = ClosestHero(E2.Range,foe)
+            if Etarget and Jayce.Flee.E2:Value() then
+                self:CastE2(Etarget)
+            end
         end
-        if Rumble.Flee.W:Value() then
-            self:CastW()
-        end
-    end
-    local Rtarget = GetTarget(R.Range)
-    if Rtarget and Rumble.Ultimate.R:Value() then
-        self:CastR(Rtarget)
     end
 end
 
-function Rumble:CastE(target)
-    if Rumble.Heat.N:Value() and myHero.mana >= 90 then return end
-    if Ready(_E) then
+function Jayce:CurrentForm()
+    if myHero.range >= 350 then
+        return "Ranged"
+    else
+        return "Melee"
+    end
+end
+
+function Jayce:CastQ(target)
+	if Ready(_Q) then
         if target and HPred:CanTarget(target) then
-            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, E.Range, E.Delay, E.Speed, E.Width, true, nil)
-            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= E.Range then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, true, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
                 EnableOrb(false)
-                Control.CastSpell(HK_E, aimPosition)
+                Control.CastSpell(HK_Q, aimPosition)
                 EnableOrb(true)
             end
         end
     end
 end
 
-function Rumble:CastEMinion(target)
-    if Rumble.Heat.N:Value() and myHero.mana >= 90 then return end
-	if Ready(_E) then
-        if target then
-            local pred = target:GetPrediction(E.Speed, E.Delay)
-            if target:GetCollision(E.Width, E.Speed, E.Delay) == 1 then
-                Control.CastSpell(HK_E, pred)
+function Jayce:CastEQ(target)
+	if Ready(_Q) and Ready(_E) then
+        if target and HPred:CanTarget(target) then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, EQ.Range, EQ.Delay, EQ.Speed, EQ.Width, true, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= EQ.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, aimPosition)
+                EnableOrb(true)
             end
         end
     end
 end
 
-function Rumble:CastW()
-    if Rumble.Heat.N:Value() and myHero.mana >= 80 then return end
+function Jayce:CastQ2(target)
+	if Ready(_Q) then
+        EnableOrb(false)
+        Control.CastSpell(HK_Q,target)
+        EnableOrb(true)
+    end
+end
+
+function Jayce:CastW()
 	if Ready(_W) then
         EnableOrb(false)
         Control.CastSpell(HK_W)
@@ -472,59 +611,64 @@ function Rumble:CastW()
     end
 end
 
-function Rumble:CastQ(target)
-    if Rumble.Heat.N:Value() and myHero.mana >= 80 then return end
-	if Ready(_Q) then
+function Jayce:CastE(pos)
+	if Ready(_E) then
         EnableOrb(false)
-        Control.CastSpell(HK_Q, target)
+        Control.CastSpell(HK_E,pos)
         EnableOrb(true)
     end
 end
 
-function Rumble:CastR(target)
+function Jayce:CastE2(target)
+	if Ready(_E) then
+        EnableOrb(false)
+        Control.CastSpell(HK_E,target)
+        EnableOrb(true)
+    end
+end
+
+function Jayce:CastR()
 	if Ready(_R) then
-        if target and HPred:CanTarget(target) then
-            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, R.Range, R.Delay, R.Speed, R.Width, true, nil)
-            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= R.Range then
-                EnableOrb(false)
-                Control.SetCursorPos(aimPosition)
-                Control.KeyDown(HK_R)
-                Control.SetCursorPos(target.pos)
-                Control.KeyUp(HK_R)
-                EnableOrb(true)
-            end
-        end
+        EnableOrb(false)
+        Control.CastSpell(HK_R)
+        EnableOrb(true)
     end
 end
 
-function Rumble:GetEMinion()
-    for i = 1, Game.MinionCount() do
-        local minion = Game.Minion(i)
-        local Edamage = CalcMagicalDamage(myHero, minion, 35 + 25 * myHero:GetSpellData(_E).level + 0.4 * myHero.ap)
-        if myHero.mana > 50 then
-            Edamage = Edamage * 1.5
-        end
-        if GetDistance(minion.pos) < E.Range and not minion.dead and minion.team == foe and Edamage > minion.health then
-            return minion
-        end
-    end
-end
-
-function Rumble:Draw()
+function Jayce:Draw()
     local target = GetTarget(2000)
-    if Rumble.dead then return end
-    if Rumble.Draw.Q:Value() and Ready(_Q) then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
-    if Rumble.Draw.E:Value() and Ready(_E) then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 000, 255, 000)) end
-    if Rumble.Draw.R:Value() and Ready(_R) then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    if Jayce.dead then return end
+    local form = self:CurrentForm()
+    if form == "Ranged" then
+        if Jayce.Draw.Q:Value() and Ready(_Q) then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+        if Jayce.Draw.W:Value() and Ready(_W) then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+        if Jayce.Draw.E:Value() and Ready(_E) then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    else
+        if Jayce.Draw.Q:Value() and Ready(_Q) then Draw.Circle(myHero.pos, Q2.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+        if Jayce.Draw.W:Value() and Ready(_W) then Draw.Circle(myHero.pos, W2.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+        if Jayce.Draw.E:Value() and Ready(_E) then Draw.Circle(myHero.pos, E2.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    end
     local textPos = myHero.pos:To2D()
-	local size = Rumble.Draw.Size:Value()
-	local xPos = Rumble.Draw.xPos:Value()
-	local yPos = Rumble.Draw.yPos:Value()
-    if Rumble.T:Value() then
-		Draw.Text("SCRIPT ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
-	else
-		Draw.Text("SCRIPT OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
-	end
+    if Jayce.Draw.Harass.Text:Value() then
+        local size = Jayce.Draw.Harass.Size:Value()
+	    local xPos = Jayce.Draw.Harass.xPos:Value()
+	    local yPos = Jayce.Draw.Harass.yPos:Value()
+        if Jayce.Harass.T:Value() then
+		    Draw.Text("HARASS ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("HARASS OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+    if Jayce.Draw.Clear.Text:Value() then
+        local size = Jayce.Draw.Clear.Size:Value()
+	    local xPos = Jayce.Draw.Clear.xPos:Value()
+	    local yPos = Jayce.Draw.Clear.yPos:Value()
+        if Jayce.Clear.T:Value() then
+		    Draw.Text("CLEAR ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("CLEAR OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
 end
 
 local loaded = false
