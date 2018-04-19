@@ -149,7 +149,7 @@ local channelSpells = {
 	["Katarina"] = {{slot = _R, type = "dps", channelTime = 2.5}},
 	["Malzahar"] = {{slot = _R, type = "disable", channelTime = 2.5}},
 	["MissFortune"] = {{slot = _R, type = "dps", channelTime = 3}},
-	["Shen"] = {{slot = _R, type = "utility", channelTime = 35}},
+	["Shen"] = {{slot = _R, type = "utility", channelTime = 3.5}},
 	["Warwick"] = {{slot = _R, type = "disable", channelTime = 1.5}},
 	["VelKoz"] = {{slot = _R, type = "dps", channelTime = 2.5}},
 	["Xerath"] = {{slot = _R, type = "nuke", channelTime = 10}},
