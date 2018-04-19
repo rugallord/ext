@@ -358,7 +358,7 @@ function DrMundo:LoadMenu()
 end
 
 function DrMundo:Tick()
-    if Hp() < DrMundo.Lifesaver.HP:Value() and HeroesAround(1500,LocketoftheIronSolariAlly.pos) ~= 0 and DrMundo.Lifesaver.R:Value() then
+    if Hp() < DrMundo.Lifesaver.HP:Value() and HeroesAround(1500,myHero.pos) ~= 0 and DrMundo.Lifesaver.R:Value() then
         self:CastR()
     end
     if DrMundo.Harass.T:Value() then
