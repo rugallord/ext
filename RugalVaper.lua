@@ -11,82 +11,6 @@ local mathfloor = math.floor
 local HKITEM = {[ITEM_1] = HK_ITEM_1,[ITEM_2] = HK_ITEM_2,[ITEM_3] = HK_ITEM_3,[ITEM_4] = HK_ITEM_4,[ITEM_5] = HK_ITEM_5,[ITEM_6] = HK_ITEM_6,[ITEM_7] = HK_ITEM_7}
 local HKSPELL = {[SUMMONER_1] = HK_SUMMONER_1,[SUMMONER_2] = HK_SUMMONER_2,}
 
-local iconDb = {
-    DrMundo = "https://raw.githubusercontent.com/rugallord/ext/master/icons/DrMundo.jpg",
-    DrMundoQ = "https://vignette.wikia.nocookie.net/leagueoflegends/images/f/f2/Infected_Cleaver.png",
-    DrMundoW = "https://vignette.wikia.nocookie.net/leagueoflegends/images/5/5d/Burning_Agony.png",
-    DrMundoE = "https://vignette.wikia.nocookie.net/leagueoflegends/images/9/95/Masochism.png",
-    DrMundoR = "https://vignette.wikia.nocookie.net/leagueoflegends/images/8/81/Sadism.png",
-
-    Jayce = "https://raw.githubusercontent.com/rugallord/ext/master/icons/Jayce.jpg",
-    JayceQ = "https://vignette.wikia.nocookie.net/leagueoflegends/images/9/91/Shock_Blast.png",
-    JayceW = "https://vignette.wikia.nocookie.net/leagueoflegends/images/3/3f/Hyper_Charge.png",
-    JayceE = "https://vignette.wikia.nocookie.net/leagueoflegends/images/8/84/Acceleration_Gate.png",
-    JayceQ2 = "https://vignette.wikia.nocookie.net/leagueoflegends/images/2/2b/To_the_Skies%21.png",
-    JayceW2 = "https://vignette.wikia.nocookie.net/leagueoflegends/images/a/a1/Lightning_Field.png",
-    JayceE2 = "https://vignette.wikia.nocookie.net/leagueoflegends/images/9/97/Thundering_Blow.png",
-    
-    Activator = "https://vignette.wikia.nocookie.net/leagueoflegends/images/a/a8/Deathfire_Grasp_item.png",
-    
-    CorruptingPotion = "https://vignette.wikia.nocookie.net/leagueoflegends/images/8/87/Corrupting_Potion_item.png",
-    HealthPotion = "https://vignette.wikia.nocookie.net/leagueoflegends/images/1/13/Health_Potion_item.png",
-    HuntersPotion = "https://vignette.wikia.nocookie.net/leagueoflegends/images/6/63/Hunter%27s_Potion_item.png",
-    RefillablePotion = "https://vignette.wikia.nocookie.net/leagueoflegends/images/7/7f/Refillable_Potion_item.png",
-    ManaPotion = "https://vignette.wikia.nocookie.net/leagueoflegends/images/1/1d/Mana_Potion_item.png",
-    PilferedHealthPotion = "https://vignette.wikia.nocookie.net/leagueoflegends/images/a/a9/Pilfered_Health_Potion_item.png",
-    TotalBiscuitofEverlastingWill = "https://vignette.wikia.nocookie.net/leagueoflegends/images/1/10/Total_Biscuit_of_Everlasting_Will_item.png",
-    
-    BilgewaterCutlass = "https://vignette.wikia.nocookie.net/leagueoflegends/images/4/44/Bilgewater_Cutlass_item.png",
-    Tiamat = "https://vignette.wikia.nocookie.net/leagueoflegends/images/e/e3/Tiamat_item.png",
-    BladeoftheRuinedKing = "https://vignette.wikia.nocookie.net/leagueoflegends/images/2/2f/Blade_of_the_Ruined_King_item.png",
-    HextechGLP800 = "https://vignette.wikia.nocookie.net/leagueoflegends/images/c/c9/Hextech_GLP-800_item.png",
-    HextechGunblade = "https://vignette.wikia.nocookie.net/leagueoflegends/images/6/64/Hextech_Gunblade_item.png",
-    HextechProtobelt01 = "https://vignette.wikia.nocookie.net/leagueoflegends/images/8/8d/Hextech_Protobelt-01_item.png",
-    RanduinsOmen = "https://vignette.wikia.nocookie.net/leagueoflegends/images/0/08/Randuin%27s_Omen_item.png",
-    RavenousHydra = "https://vignette.wikia.nocookie.net/leagueoflegends/images/e/e8/Ravenous_Hydra_item.png",
-    Spellbinder = "https://vignette.wikia.nocookie.net/leagueoflegends/images/0/0f/Spellbinder_item.png",
-    TitanicHydra = "https://vignette.wikia.nocookie.net/leagueoflegends/images/2/22/Titanic_Hydra_item.png",
-    
-    RighteousGlory = "https://vignette.wikia.nocookie.net/leagueoflegends/images/9/9f/Righteous_Glory_item.png",
-    TwinShadows = "https://vignette.wikia.nocookie.net/leagueoflegends/images/4/4b/Twin_Shadows_item.png",
-    YoumuusGhostblade = "https://vignette.wikia.nocookie.net/leagueoflegends/images/4/41/Youmuu%27s_Ghostblade_item.png",
-    
-    Stopwatch = "https://vignette.wikia.nocookie.net/leagueoflegends/images/e/e6/Stopwatch_item.png",
-    GargoyleStoneplate = "https://vignette.wikia.nocookie.net/leagueoflegends/images/b/bd/Gargoyle_Stoneplate_item.png",
-    LocketoftheIronSolari = "https://vignette.wikia.nocookie.net/leagueoflegends/images/5/56/Locket_of_the_Iron_Solari_item.png",
-    SeraphsEmbrace = "https://vignette.wikia.nocookie.net/leagueoflegends/images/b/b9/Seraph%27s_Embrace_item.png",
-    WoogletsWitchcap = "https://vignette.wikia.nocookie.net/leagueoflegends/images/3/38/Wooglet%27s_Witchcap_item.png",
-    ZhonyasHourglass = "https://vignette.wikia.nocookie.net/leagueoflegends/images/b/b5/Zhonya%27s_Hourglass_item.png",
-    
-    Redemption = "https://vignette.wikia.nocookie.net/leagueoflegends/images/9/94/Redemption_item.png",
-    
-    QuicksilverSash = "https://vignette.wikia.nocookie.net/leagueoflegends/images/f/f9/Quicksilver_Sash_item.png",
-    MercurialScimitar = "https://vignette.wikia.nocookie.net/leagueoflegends/images/0/0a/Mercurial_Scimitar_item.png",
-    MikaelsCrucible = "https://vignette.wikia.nocookie.net/leagueoflegends/images/d/de/Mikael%27s_Crucible_item.png",
-
-    Stun = "https://vignette.wikia.nocookie.net/leagueoflegends/images/1/10/Glacial_Prison.png",
-    Root = "https://vignette.wikia.nocookie.net/leagueoflegends/images/a/a2/Dark_Binding.png",
-    Taunt = "https://vignette.wikia.nocookie.net/leagueoflegends/images/9/92/Shadow_Dash.png",
-    Fear = "https://vignette.wikia.nocookie.net/leagueoflegends/images/b/bb/Jack_in_the_Box.png",
-    Charm = "https://vignette.wikia.nocookie.net/leagueoflegends/images/0/04/Charm.png",
-    Silence = "https://vignette.wikia.nocookie.net/leagueoflegends/images/e/e7/Equinox.png",
-    Slow = "https://vignette.wikia.nocookie.net/leagueoflegends/images/a/aa/Wither.png",
-    Blind = "https://vignette.wikia.nocookie.net/leagueoflegends/images/c/c7/Blinding_Dart.png",
-    Disarm = "https://vignette.wikia.nocookie.net/leagueoflegends/images/7/7c/Whimsy.png",
-    Sleep = "https://vignette.wikia.nocookie.net/leagueoflegends/images/d/dc/Sleepy_Trouble_Bubble.png",
-    Nearsight = "https://vignette.wikia.nocookie.net/leagueoflegends/images/8/87/Blinding_Assault.png",
-    Suppression = "https://vignette.wikia.nocookie.net/leagueoflegends/images/7/7d/Impale.png",
-
-    Ignite = "https://vignette.wikia.nocookie.net/leagueoflegends/images/f/f4/Ignite.png",
-    Exhaust = "https://vignette.wikia.nocookie.net/leagueoflegends/images/4/4a/Exhaust.png",
-    Smite = "https://vignette.wikia.nocookie.net/leagueoflegends/images/0/05/Smite.png",
-
-    Heal = "https://vignette.wikia.nocookie.net/leagueoflegends/images/6/6e/Heal.png",
-    Barrier = "https://vignette.wikia.nocookie.net/leagueoflegends/images/c/cc/Barrier.png",
-
-    Cleanse = "https://vignette.wikia.nocookie.net/leagueoflegends/images/9/95/Cleanse.png",
-}
-
 local function Ready(slot)
 	return myHero:GetSpellData(slot).currentCd == 0
 end
@@ -289,6 +213,223 @@ local function SummonerSlot(spellname)
     end
 end
 
+class "Ahri"
+
+function Ahri:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Ahri:LoadSpells()
+    Q = { Range = 880, Delay = 0.25, Width = 100, Speed = 2500}
+    W = { Range = 700}
+    E = { Range = 975, Delay = 0.25, Width = 60, Speed = 1550}
+    R = { Range = 0}
+end
+
+function Ahri:LoadMenu()
+	Ahri = MenuElement({type = MENU, id = "Ahri", name = "Rugal Vaper - Ahri"})
+    
+    Ahri:MenuElement({type = MENU, id = "Combo", name = "Combo"})
+    Ahri.Combo:MenuElement({id = "Q", name = "Q - Orb of Deception", value = true})
+    Ahri.Combo:MenuElement({id = "W", name = "W - Fox-Fire", value = true})
+    Ahri.Combo:MenuElement({id = "E", name = "E - Charm", value = true})
+    
+    Ahri:MenuElement({type = MENU, id = "Harass", name = "Harass"})
+    Ahri.Harass:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("S"), toggle = true, value = true})
+    Ahri.Harass:MenuElement({id = "Q", name = "Q - Orb of Deception", value = true})
+    Ahri.Harass:MenuElement({id = "AQ", name = "Auto Q", value = true})
+    Ahri.Harass:MenuElement({id = "W", name = "W - Fox-Fire", value = true})
+    Ahri.Harass:MenuElement({id = "E", name = "E - Charm", value = true})
+    Ahri.Harass:MenuElement({id = "AE", name = "Auto E", value = true})
+    
+    Ahri:MenuElement({type = MENU, id = "Clear", name = "Clear"})
+    Ahri.Clear:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
+    Ahri.Clear:MenuElement({id = "Q", name = "Q - Orb of Deception", value = true})
+    Ahri.Clear:MenuElement({id = "W", name = "W - Fox-Fire", value = true})
+    Ahri.Clear:MenuElement({id = "E", name = "E - Charm", value = true})
+    
+    Ahri:MenuElement({type = MENU, id = "Flee", name = "Flee"})
+    Ahri.Flee:MenuElement({id = "Q", name = "Q - Orb of Deception", value = true})
+    Ahri.Flee:MenuElement({id = "E", name = "E - Charm", value = true})
+    
+    Ahri:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Ahri.Draw:MenuElement({id = "Q", name = "Q Range", value = true})
+    Ahri.Draw:MenuElement({id = "W", name = "W Range", value = true})
+    Ahri.Draw:MenuElement({id = "E", name = "E Range", value = true})
+    Ahri.Draw:MenuElement({id = "Harass", name = "Harass Status", type = MENU})
+    Ahri.Draw.Harass:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Ahri.Draw.Harass:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Ahri.Draw.Harass:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Ahri.Draw.Harass:MenuElement({id = "yPos", name = "Text Y Position", value = -140, min = -1000, max = 1000, step = 10})
+    Ahri.Draw:MenuElement({id = "Clear", name = "Clear Status", type = MENU})
+    Ahri.Draw.Clear:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Ahri.Draw.Clear:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Ahri.Draw.Clear:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Ahri.Draw.Clear:MenuElement({id = "yPos", name = "Text Y Position", value = -130, min = -1000, max = 1000, step = 10})
+end
+
+function Ahri:Tick()
+    if Ahri.Harass.T:Value() then
+        local Etarget = GetTarget(E.Range)
+        if Etarget and Ahri.Harass.AE:Value() then
+            self:CastE(Etarget,2)
+        end
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Ahri.Harass.AQ:Value() then
+            self:CastQ(Qtarget,2)
+        end
+    end
+    local mode = GetMode()
+    if mode == "Combo" then
+        local Etarget = GetTarget(E.Range) 
+        if Etarget and Ahri.Combo.E:Value() then
+            self:CastE(Etarget)
+        end
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Ahri.Combo.Q:Value() then
+            self:CastQ(Qtarget)
+        end
+        local Wtarget = GetTarget(W.Range) 
+        if Wtarget and Ahri.Combo.W:Value() then
+            self:CastW()
+        end
+    end
+    if mode == "Harass" and Ahri.Harass.T:Value() then
+        local Etarget = GetTarget(E.Range) 
+        if Etarget and Ahri.Harass.E:Value() then
+            self:CastE(Etarget)
+        end
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Ahri.Harass.Q:Value() then
+            self:CastQ(Qtarget)
+        end
+        local Wtarget = GetTarget(W.Range) 
+        if Wtarget and Ahri.Harass.W:Value() then
+            self:CastW()
+        end
+    end
+    if mode == "Clear" and Ahri.Clear.T:Value() then
+        local Etarget = GetClearMinion(E.Range)
+        if Etarget and Ahri.Clear.E:Value() then
+            self:CastEMinion(Etarget)
+        end
+        local Qtarget = GetClearMinion(Q.Range)
+        if Qtarget and Ahri.Clear.Q:Value() then
+            self:CastQMinion(Qtarget)
+        end
+        local Wtarget = GetClearMinion(W.Range)
+        if Wtarget and Ahri.Clear.W:Value() then
+            self:CastW()
+        end
+    end
+    if mode == "Flee" then
+        local Etarget = ClosestHero(E.Range,foe)
+        if Etarget and Ahri.Flee.E:Value() then
+            self:CastE(Etarget)
+        end
+        local vec = myHero.pos:Extended(mousePos, -200)
+        if Ahri.Flee.Q:Value() then
+            self:CastQFlee(vec)
+        end
+    end
+end
+
+function Ahri:CastQ(target,precision)
+    local precision = precision or 1
+	if Ready(_Q) and IsUp(_Q) then
+        if target and HPred:CanTarget(target) then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, false, nil)
+            if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, aimPosition)
+                EnableOrb(true)
+            end
+        end
+    end
+end
+
+function Ahri:CastE(target,precision)
+    local precision = precision or 1
+	if Ready(_E) and IsUp(_E) then
+        if target and HPred:CanTarget(target) then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, E.Range, E.Delay, E.Speed, E.Width, true, nil)
+            if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= E.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_E, aimPosition)
+                EnableOrb(true)
+            end
+        end
+    end
+end
+
+function Ahri:CastQMinion(target)
+	if Ready(_Q) and IsUp(_Q) then
+        if target then
+            local pred = target:GetPrediction(Q.Speed, Q.Delay)
+            Control.CastSpell(HK_Q, pred)
+        end
+    end
+end
+
+function Ahri:CastEMinion(target)
+	if Ready(_E) and IsUp(_E) then
+        if target then
+            local pred = target:GetPrediction(E.Speed, E.Delay)
+            if target:GetCollision(E.Width, E.Speed, E.Delay) <= 1 then
+                Control.CastSpell(HK_E, pred)
+            end
+        end
+    end
+end
+
+function Ahri:CastQFlee(pos)
+	if Ready(_Q) and IsUp(_Q) then
+        EnableOrb(false)
+        Control.CastSpell(HK_Q,pos)
+        EnableOrb(true)
+    end
+end
+
+function Ahri:CastW()
+	if Ready(_W) and IsUp(_W) then
+        EnableOrb(false)
+        Control.CastSpell(HK_W)
+        EnableOrb(true)
+    end
+end
+
+function Ahri:Draw()
+    local target = GetTarget(2000)
+    if Ahri.dead then return end
+    if Ahri.Draw.Q:Value() and Ready(_Q) then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Ahri.Draw.W:Value() and Ready(_W) then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if Ahri.Draw.E:Value() and Ready(_E) then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    local textPos = myHero.pos:To2D()
+    if Ahri.Draw.Harass.Text:Value() then
+        local size = Ahri.Draw.Harass.Size:Value()
+	    local xPos = Ahri.Draw.Harass.xPos:Value()
+	    local yPos = Ahri.Draw.Harass.yPos:Value()
+        if Ahri.Harass.T:Value() then
+		    Draw.Text("HARASS ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("HARASS OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+    if Ahri.Draw.Clear.Text:Value() then
+        local size = Ahri.Draw.Clear.Size:Value()
+	    local xPos = Ahri.Draw.Clear.xPos:Value()
+	    local yPos = Ahri.Draw.Clear.yPos:Value()
+        if Ahri.Clear.T:Value() then
+		    Draw.Text("CLEAR ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("CLEAR OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+end
+
 class "DrMundo"
 
 function DrMundo:__init()
@@ -306,35 +447,35 @@ function DrMundo:LoadSpells()
 end
 
 function DrMundo:LoadMenu()
-	DrMundo = MenuElement({type = MENU, id = "DrMundo", name = "Rugal Vaper - Dr. Mundo", leftIcon = iconDb.DrMundo})
+	DrMundo = MenuElement({type = MENU, id = "DrMundo", name = "Rugal Vaper - Dr. Mundo"})
     
     DrMundo:MenuElement({type = MENU, id = "Combo", name = "Combo"})
-    DrMundo.Combo:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true, leftIcon = iconDb.DrMundoQ})
-    DrMundo.Combo:MenuElement({id = "W", name = "W - Burning Agony", value = true, leftIcon = iconDb.DrMundoW})
-    DrMundo.Combo:MenuElement({id = "E", name = "E - Masochism", value = true, leftIcon = iconDb.DrMundoE})
+    DrMundo.Combo:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true})
+    DrMundo.Combo:MenuElement({id = "W", name = "W - Burning Agony", value = true})
+    DrMundo.Combo:MenuElement({id = "E", name = "E - Masochism", value = true})
     
     DrMundo:MenuElement({type = MENU, id = "Harass", name = "Harass"})
     DrMundo.Harass:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("S"), toggle = true, value = true})
-    DrMundo.Harass:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true, leftIcon = iconDb.DrMundoQ})
+    DrMundo.Harass:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true})
     DrMundo.Harass:MenuElement({id = "AQ", name = "Auto Q", value = true})
-    DrMundo.Harass:MenuElement({id = "W", name = "W - Burning Agony", value = true, leftIcon = iconDb.DrMundoW})
-    DrMundo.Harass:MenuElement({id = "E", name = "E - Masochism", value = true, leftIcon = iconDb.DrMundoE})
+    DrMundo.Harass:MenuElement({id = "W", name = "W - Burning Agony", value = true})
+    DrMundo.Harass:MenuElement({id = "E", name = "E - Masochism", value = true})
     
     DrMundo:MenuElement({type = MENU, id = "Clear", name = "Clear"})
     DrMundo.Clear:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
-    DrMundo.Clear:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true, leftIcon = iconDb.DrMundoQ})
-    DrMundo.Clear:MenuElement({id = "W", name = "W - Burning Agony", value = true, leftIcon = iconDb.DrMundoW})
-    DrMundo.Clear:MenuElement({id = "E", name = "E - Masochism", value = true, leftIcon = iconDb.DrMundoE})
+    DrMundo.Clear:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true})
+    DrMundo.Clear:MenuElement({id = "W", name = "W - Burning Agony", value = true})
+    DrMundo.Clear:MenuElement({id = "E", name = "E - Masochism", value = true})
     
     DrMundo:MenuElement({type = MENU, id = "Lasthit", name = "Lasthit"})
     DrMundo.Lasthit:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
-    DrMundo.Lasthit:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true, leftIcon = iconDb.DrMundoQ})
+    DrMundo.Lasthit:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true})
     
     DrMundo:MenuElement({type = MENU, id = "Flee", name = "Flee"})
-    DrMundo.Flee:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true, leftIcon = iconDb.DrMundoQ})
+    DrMundo.Flee:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true})
     
     DrMundo:MenuElement({type = MENU, id = "Lifesaver", name = "Life Saver"})
-    DrMundo.Lifesaver:MenuElement({id = "R", name = "R - Sadism", value = true, leftIcon = iconDb.DrMundoR})
+    DrMundo.Lifesaver:MenuElement({id = "R", name = "R - Sadism", value = true})
     DrMundo.Lifesaver:MenuElement({id = "HP", name = "Health % to Life Saver", value = 15, min = 0, max = 100})
     
     DrMundo:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
@@ -364,7 +505,7 @@ function DrMundo:Tick()
     if DrMundo.Harass.T:Value() then
         local Qtarget = GetTarget(Q.Range)
         if Qtarget and DrMundo.Harass.AQ:Value() then
-            self:CastQ(Qtarget)
+            self:CastQ(Qtarget,2)
         end
     end
     local mode = GetMode()
@@ -424,11 +565,12 @@ function DrMundo:Tick()
     end
 end
 
-function DrMundo:CastQ(target)
+function DrMundo:CastQ(target,precision)
+    local precision = precision or 1
 	if Ready(_Q) and IsUp(_Q) then
         if target and HPred:CanTarget(target) then
             local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, true, nil)
-            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
+            if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
                 EnableOrb(false)
                 Control.CastSpell(HK_Q, aimPosition)
                 EnableOrb(true)
@@ -541,39 +683,39 @@ function Jayce:LoadSpells()
 end
 
 function Jayce:LoadMenu()
-	Jayce = MenuElement({type = MENU, id = "Jayce", name = "Rugal Vaper - Jayce", leftIcon = iconDb.Jayce})
+	Jayce = MenuElement({type = MENU, id = "Jayce", name = "Rugal Vaper - Jayce"})
     
     Jayce:MenuElement({type = MENU, id = "Combo", name = "Combo"})
-    Jayce.Combo:MenuElement({id = "Q", name = "Q - Shock Blast", value = true, leftIcon = iconDb.JayceQ})
-    Jayce.Combo:MenuElement({id = "W", name = "W - Hyper Charge", value = true, leftIcon = iconDb.JayceW})
-    Jayce.Combo:MenuElement({id = "EQ", name = "E - Acceleration Gate", value = true, leftIcon = iconDb.JayceE})
-    Jayce.Combo:MenuElement({id = "Q2", name = "Q - To the Skies!", value = true, leftIcon = iconDb.JayceQ2})
-    Jayce.Combo:MenuElement({id = "W2", name = "W - Lightning Field", value = true, leftIcon = iconDb.JayceW2})
-    Jayce.Combo:MenuElement({id = "E2", name = "E - Thundering Blow", value = true, leftIcon = iconDb.JayceE2})
+    Jayce.Combo:MenuElement({id = "Q", name = "Q - Shock Blast", value = true})
+    Jayce.Combo:MenuElement({id = "W", name = "W - Hyper Charge", value = true})
+    Jayce.Combo:MenuElement({id = "EQ", name = "E - Acceleration Gate", value = true})
+    Jayce.Combo:MenuElement({id = "Q2", name = "Q - To the Skies!", value = true})
+    Jayce.Combo:MenuElement({id = "W2", name = "W - Lightning Field", value = true})
+    Jayce.Combo:MenuElement({id = "E2", name = "E - Thundering Blow", value = true})
     
     Jayce:MenuElement({type = MENU, id = "Harass", name = "Harass"})
     Jayce.Harass:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("S"), toggle = true, value = true})
-    Jayce.Harass:MenuElement({id = "Q", name = "Q - Shock Blast", value = true, leftIcon = iconDb.JayceQ})
+    Jayce.Harass:MenuElement({id = "Q", name = "Q - Shock Blast", value = true})
     Jayce.Harass:MenuElement({id = "AQ", name = "Auto Q", value = true})
-    Jayce.Harass:MenuElement({id = "W", name = "W - Hyper Charge", value = true, leftIcon = iconDb.JayceW})
-    Jayce.Harass:MenuElement({id = "EQ", name = "E - Acceleration Gate", value = true, leftIcon = iconDb.JayceE})
+    Jayce.Harass:MenuElement({id = "W", name = "W - Hyper Charge", value = true})
+    Jayce.Harass:MenuElement({id = "EQ", name = "E - Acceleration Gate", value = true})
     Jayce.Harass:MenuElement({id = "AEQ", name = "Auto E", value = true})
-    Jayce.Harass:MenuElement({id = "Q2", name = "Q - To the Skies!", value = true, leftIcon = iconDb.JayceQ2})
-    Jayce.Harass:MenuElement({id = "W2", name = "W - Lightning Field", value = true, leftIcon = iconDb.JayceW2})
-    Jayce.Harass:MenuElement({id = "E2", name = "E - Thundering Blow", value = true, leftIcon = iconDb.JayceE2})
+    Jayce.Harass:MenuElement({id = "Q2", name = "Q - To the Skies!", value = true})
+    Jayce.Harass:MenuElement({id = "W2", name = "W - Lightning Field", value = true})
+    Jayce.Harass:MenuElement({id = "E2", name = "E - Thundering Blow", value = true})
     
     Jayce:MenuElement({type = MENU, id = "Clear", name = "Clear"})
     Jayce.Clear:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
-    Jayce.Clear:MenuElement({id = "Q", name = "Q - Shock Blast", value = true, leftIcon = iconDb.JayceQ})
-    Jayce.Clear:MenuElement({id = "W", name = "W - Hyper Charge", value = true, leftIcon = iconDb.JayceW})
-    Jayce.Clear:MenuElement({id = "EQ", name = "E - Acceleration Gate", value = true, leftIcon = iconDb.JayceE})
-    Jayce.Clear:MenuElement({id = "Q2", name = "Q - To the Skies!", value = true, leftIcon = iconDb.JayceQ2})
-    Jayce.Clear:MenuElement({id = "W2", name = "W - Lightning Field", value = true, leftIcon = iconDb.JayceW2})
-    Jayce.Clear:MenuElement({id = "E2", name = "E - Thundering Blow", value = true, leftIcon = iconDb.JayceE2})
+    Jayce.Clear:MenuElement({id = "Q", name = "Q - Shock Blast", value = true})
+    Jayce.Clear:MenuElement({id = "W", name = "W - Hyper Charge", value = true})
+    Jayce.Clear:MenuElement({id = "EQ", name = "E - Acceleration Gate", value = true})
+    Jayce.Clear:MenuElement({id = "Q2", name = "Q - To the Skies!", value = true})
+    Jayce.Clear:MenuElement({id = "W2", name = "W - Lightning Field", value = true})
+    Jayce.Clear:MenuElement({id = "E2", name = "E - Thundering Blow", value = true})
     
     Jayce:MenuElement({type = MENU, id = "Flee", name = "Flee"})
-    Jayce.Flee:MenuElement({id = "E", name = "E - Acceleration Gate", value = true, leftIcon = iconDb.JayceE})
-    Jayce.Flee:MenuElement({id = "E2", name = "E - Thundering Blow", value = true, leftIcon = iconDb.JayceE2})
+    Jayce.Flee:MenuElement({id = "E", name = "E - Acceleration Gate", value = true})
+    Jayce.Flee:MenuElement({id = "E2", name = "E - Thundering Blow", value = true})
     
     Jayce:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
     Jayce.Draw:MenuElement({id = "Q", name = "Q Range", value = true})
@@ -597,11 +739,11 @@ function Jayce:Tick()
         if form == "Ranged" then
             local EQtarget = GetTarget(EQ.Range)
             if EQtarget and Jayce.Harass.AEQ:Value() then
-                self:CastEQ(EQtarget)
+                self:CastEQ(EQtarget,2)
             end
             local Qtarget = GetTarget(Q.Range)
             if Qtarget and Jayce.Harass.AQ:Value() then
-                self:CastQ(Qtarget)
+                self:CastQ(Qtarget,2)
             end
         end
     end
@@ -716,11 +858,12 @@ function Jayce:CurrentForm()
     end
 end
 
-function Jayce:CastQ(target)
+function Jayce:CastQ(target,precision)
+    local precision = precision or 1
 	if Ready(_Q) and IsUp(_Q) then
         if target and HPred:CanTarget(target) then
             local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, true, nil)
-            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
+            if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
                 EnableOrb(false)
                 Control.CastSpell(HK_Q, aimPosition)
                 EnableOrb(true)
@@ -730,10 +873,11 @@ function Jayce:CastQ(target)
 end
 
 local lastE = os.clock()
-function Jayce:CastEQ(target)
+function Jayce:CastEQ(target,precision)
+    local precision = precision or 1
     if target then
         local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, EQ.Range, EQ.Delay, EQ.Speed, EQ.Width, true, nil)
-        if GetDistance(myHero.pos, aimPosition) <= EQ.Range then
+        if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= EQ.Range then
             EnableOrb(false)
             local Evector = myHero.pos:Extended(target.pos, 200)
             if Ready(_E) and IsUp(_E) and Ready(_Q) and IsUp(_Q) then
@@ -832,129 +976,129 @@ function Utility:__init()
 end
 
 function Utility:Menu()
-    Vaper = MenuElement({type = MENU, id = "Vaper", name = "Rugal Vaper - Activator", leftIcon = iconDb.Activator})
+    Vaper = MenuElement({type = MENU, id = "Vaper", name = "Rugal Vaper - Activator"})
 
     Vaper:MenuElement({type = MENU, id = "Potion", name = "Potion"})
-    Vaper.Potion:MenuElement({id = "CorruptingPotion", name = "Corrupting Potion", value = true, leftIcon = iconDb.CorruptingPotion})
+    Vaper.Potion:MenuElement({id = "CorruptingPotion", name = "Corrupting Potion", value = true})
     Vaper.Potion:MenuElement({id = "HP1", name = "Health % to Potion", value = 60, min = 0, max = 100})
     Vaper.Potion:MenuElement({id = "MP1", name = "Mana % to Potion", value = 25, min = 0, max = 100})
-    Vaper.Potion:MenuElement({id = "HealthPotion", name = "Health Potion", value = true, leftIcon = iconDb.HealthPotion})
+    Vaper.Potion:MenuElement({id = "HealthPotion", name = "Health Potion", value = true})
     Vaper.Potion:MenuElement({id = "HP2", name = "Health % to Potion", value = 60, min = 0, max = 100})
-    Vaper.Potion:MenuElement({id = "HuntersPotion", name = "Hunter's Potion", value = true, leftIcon = iconDb.HuntersPotion})
+    Vaper.Potion:MenuElement({id = "HuntersPotion", name = "Hunter's Potion", value = true})
     Vaper.Potion:MenuElement({id = "HP3", name = "Health % to Potion", value = 60, min = 0, max = 100})
     Vaper.Potion:MenuElement({id = "MP3", name = "Mana % to Potion", value = 25, min = 0, max = 100})
-    Vaper.Potion:MenuElement({id = "RefillablePotion", name = "Refillable Potion", value = true, leftIcon = iconDb.RefillablePotion})
+    Vaper.Potion:MenuElement({id = "RefillablePotion", name = "Refillable Potion", value = true})
     Vaper.Potion:MenuElement({id = "HP4", name = "Health % to Potion", value = 60, min = 0, max = 100})
-    Vaper.Potion:MenuElement({id = "ManaPotion", name = "Mana Potion", value = true, leftIcon = iconDb.ManaPotion})
+    Vaper.Potion:MenuElement({id = "ManaPotion", name = "Mana Potion", value = true})
     Vaper.Potion:MenuElement({id = "MP5", name = "Mana % to Potion", value = 25, min = 0, max = 100})
-    Vaper.Potion:MenuElement({id = "PilferedHealthPotion", name = "Pilfered Health Potion", value = true, leftIcon = iconDb.PilferedHealthPotion})
+    Vaper.Potion:MenuElement({id = "PilferedHealthPotion", name = "Pilfered Health Potion", value = true})
     Vaper.Potion:MenuElement({id = "HP6", name = "Health % to Potion", value = 60, min = 0, max = 100})
-    Vaper.Potion:MenuElement({id = "TotalBiscuitofEverlastingWill", name = "Total Biscuit of Everlasting Will", value = true, leftIcon = iconDb.TotalBiscuitofEverlastingWill})
+    Vaper.Potion:MenuElement({id = "TotalBiscuitofEverlastingWill", name = "Total Biscuit of Everlasting Will", value = true})
     Vaper.Potion:MenuElement({id = "HP7", name = "Health % to Potion", value = 60, min = 0, max = 100})
     Vaper.Potion:MenuElement({id = "MP7", name = "Mana % to Potion", value = 25, min = 0, max = 100})
     
     Vaper:MenuElement({type = MENU, id = "Combo", name = "Combo"})
-    Vaper.Combo:MenuElement({id = "Ignite", name = "Ignite", value = true, leftIcon = iconDb.Ignite})
-    Vaper.Combo:MenuElement({id = "Smite", name = "Smite", value = true, leftIcon = iconDb.Smite})
-    Vaper.Combo:MenuElement({id = "Exhaust", name = "Exhaust", value = true, leftIcon = iconDb.Exhaust})
+    Vaper.Combo:MenuElement({id = "Ignite", name = "Ignite", value = true})
+    Vaper.Combo:MenuElement({id = "Smite", name = "Smite", value = true})
+    Vaper.Combo:MenuElement({id = "Exhaust", name = "Exhaust", value = true})
     Vaper.Combo:MenuElement({id = " ", name = " ", type = SPACE})
-    Vaper.Combo:MenuElement({id = "BilgewaterCutlass", name = "Bilgewater Cutlass", value = true, leftIcon = iconDb.BilgewaterCutlass})
-    Vaper.Combo:MenuElement({id = "Tiamat", name = "Tiamat", value = true, leftIcon = iconDb.Tiamat})
-    Vaper.Combo:MenuElement({id = "BladeoftheRuinedKing", name = "Blade of the Ruined King", value = true, leftIcon = iconDb.BladeoftheRuinedKing})
-    Vaper.Combo:MenuElement({id = "HextechGLP800", name = "Hextech GLP-800", value = true, leftIcon = iconDb.HextechGLP800})
-    Vaper.Combo:MenuElement({id = "HextechGunblade", name = "Hextech Gunblade", value = true, leftIcon = iconDb.HextechGunblade})
-    Vaper.Combo:MenuElement({id = "HextechProtobelt01", name = "Hextech Protobelt-01", value = true, leftIcon = iconDb.HextechProtobelt01})
-    Vaper.Combo:MenuElement({id = "RanduinsOmen", name = "Randuin's Omen", value = true, leftIcon = iconDb.RanduinsOmen})
-    Vaper.Combo:MenuElement({id = "RavenousHydra", name = "Ravenous Hydra", value = true, leftIcon = iconDb.RavenousHydra})
-    Vaper.Combo:MenuElement({id = "Spellbinder", name = "Spellbinder", value = true, leftIcon = iconDb.Spellbinder})
-    Vaper.Combo:MenuElement({id = "TitanicHydra", name = "Titanic Hydra", value = true, leftIcon = iconDb.TitanicHydra})
+    Vaper.Combo:MenuElement({id = "BilgewaterCutlass", name = "Bilgewater Cutlass", value = true})
+    Vaper.Combo:MenuElement({id = "Tiamat", name = "Tiamat", value = true})
+    Vaper.Combo:MenuElement({id = "BladeoftheRuinedKing", name = "Blade of the Ruined King", value = true})
+    Vaper.Combo:MenuElement({id = "HextechGLP800", name = "Hextech GLP-800", value = true})
+    Vaper.Combo:MenuElement({id = "HextechGunblade", name = "Hextech Gunblade", value = true})
+    Vaper.Combo:MenuElement({id = "HextechProtobelt01", name = "Hextech Protobelt-01", value = true})
+    Vaper.Combo:MenuElement({id = "RanduinsOmen", name = "Randuin's Omen", value = true})
+    Vaper.Combo:MenuElement({id = "RavenousHydra", name = "Ravenous Hydra", value = true})
+    Vaper.Combo:MenuElement({id = "Spellbinder", name = "Spellbinder", value = true})
+    Vaper.Combo:MenuElement({id = "TitanicHydra", name = "Titanic Hydra", value = true})
 
     Vaper:MenuElement({type = MENU, id = "Harass", name = "Harass"})
-    Vaper.Harass:MenuElement({id = "Ignite", name = "Ignite", value = true, leftIcon = iconDb.Ignite})
-    Vaper.Harass:MenuElement({id = "Smite", name = "Smite", value = true, leftIcon = iconDb.Smite})
-    Vaper.Harass:MenuElement({id = "Exhaust", name = "Exhaust", value = true, leftIcon = iconDb.Exhaust})
+    Vaper.Harass:MenuElement({id = "Ignite", name = "Ignite", value = true})
+    Vaper.Harass:MenuElement({id = "Smite", name = "Smite", value = true})
+    Vaper.Harass:MenuElement({id = "Exhaust", name = "Exhaust", value = true})
     Vaper.Harass:MenuElement({id = " ", name = " ", type = SPACE})
-    Vaper.Harass:MenuElement({id = "BilgewaterCutlass", name = "Bilgewater Cutlass", value = true, leftIcon = iconDb.BilgewaterCutlass})
-    Vaper.Harass:MenuElement({id = "Tiamat", name = "Tiamat", value = true, leftIcon = iconDb.Tiamat})
-    Vaper.Harass:MenuElement({id = "BladeoftheRuinedKing", name = "Blade of the Ruined King", value = true, leftIcon = iconDb.BladeoftheRuinedKing})
-    Vaper.Harass:MenuElement({id = "HextechGLP800", name = "Hextech GLP-800", value = true, leftIcon = iconDb.HextechGLP800})
-    Vaper.Harass:MenuElement({id = "HextechGunblade", name = "Hextech Gunblade", value = true, leftIcon = iconDb.HextechGunblade})
-    Vaper.Harass:MenuElement({id = "HextechProtobelt01", name = "Hextech Protobelt-01", value = true, leftIcon = iconDb.HextechProtobelt01})
-    Vaper.Harass:MenuElement({id = "RanduinsOmen", name = "Randuin's Omen", value = true, leftIcon = iconDb.RanduinsOmen})
-    Vaper.Harass:MenuElement({id = "RavenousHydra", name = "Ravenous Hydra", value = true, leftIcon = iconDb.RavenousHydra})
-    Vaper.Harass:MenuElement({id = "Spellbinder", name = "Spellbinder", value = true, leftIcon = iconDb.Spellbinder})
-    Vaper.Harass:MenuElement({id = "TitanicHydra", name = "Titanic Hydra", value = true, leftIcon = iconDb.TitanicHydra})
+    Vaper.Harass:MenuElement({id = "BilgewaterCutlass", name = "Bilgewater Cutlass", value = true})
+    Vaper.Harass:MenuElement({id = "Tiamat", name = "Tiamat", value = true})
+    Vaper.Harass:MenuElement({id = "BladeoftheRuinedKing", name = "Blade of the Ruined King", value = true})
+    Vaper.Harass:MenuElement({id = "HextechGLP800", name = "Hextech GLP-800", value = true})
+    Vaper.Harass:MenuElement({id = "HextechGunblade", name = "Hextech Gunblade", value = true})
+    Vaper.Harass:MenuElement({id = "HextechProtobelt01", name = "Hextech Protobelt-01", value = true})
+    Vaper.Harass:MenuElement({id = "RanduinsOmen", name = "Randuin's Omen", value = true})
+    Vaper.Harass:MenuElement({id = "RavenousHydra", name = "Ravenous Hydra", value = true})
+    Vaper.Harass:MenuElement({id = "Spellbinder", name = "Spellbinder", value = true})
+    Vaper.Harass:MenuElement({id = "TitanicHydra", name = "Titanic Hydra", value = true})
 
     Vaper:MenuElement({type = MENU, id = "Clear", name = "Clear"})
-    Vaper.Clear:MenuElement({id = "Tiamat", name = "Tiamat", value = true, leftIcon = iconDb.Tiamat})
-    Vaper.Clear:MenuElement({id = "HextechGLP800", name = "Hextech GLP-800", value = true, leftIcon = iconDb.HextechGLP800})
-    Vaper.Clear:MenuElement({id = "HextechProtobelt01", name = "Hextech Protobelt-01", value = true, leftIcon = iconDb.HextechProtobelt01})
-    Vaper.Clear:MenuElement({id = "RavenousHydra", name = "Ravenous Hydra", value = true, leftIcon = iconDb.RavenousHydra})
-    Vaper.Clear:MenuElement({id = "TitanicHydra", name = "Titanic Hydra", value = true, leftIcon = iconDb.TitanicHydra})
+    Vaper.Clear:MenuElement({id = "Tiamat", name = "Tiamat", value = true})
+    Vaper.Clear:MenuElement({id = "HextechGLP800", name = "Hextech GLP-800", value = true})
+    Vaper.Clear:MenuElement({id = "HextechProtobelt01", name = "Hextech Protobelt-01", value = true})
+    Vaper.Clear:MenuElement({id = "RavenousHydra", name = "Ravenous Hydra", value = true})
+    Vaper.Clear:MenuElement({id = "TitanicHydra", name = "Titanic Hydra", value = true})
 
     Vaper:MenuElement({type = MENU, id = "Flee", name = "Flee"})
-    Vaper.Flee:MenuElement({id = "Exhaust", name = "Exhaust", value = true, leftIcon = iconDb.Exhaust})
+    Vaper.Flee:MenuElement({id = "Exhaust", name = "Exhaust", value = true})
     Vaper.Flee:MenuElement({id = " ", name = " ", type = SPACE})
-    Vaper.Flee:MenuElement({id = "BilgewaterCutlass", name = "Bilgewater Cutlass", value = true, leftIcon = iconDb.BilgewaterCutlass})
-    Vaper.Flee:MenuElement({id = "BladeoftheRuinedKing", name = "Blade of the Ruined King", value = true, leftIcon = iconDb.BladeoftheRuinedKing})
-    Vaper.Flee:MenuElement({id = "HextechGLP800", name = "Hextech GLP-800", value = true, leftIcon = iconDb.HextechGLP800})
-    Vaper.Flee:MenuElement({id = "HextechGunblade", name = "Hextech Gunblade", value = true, leftIcon = iconDb.HextechGunblade})
-    Vaper.Flee:MenuElement({id = "HextechProtobelt01", name = "Hextech Protobelt-01", value = true, leftIcon = iconDb.HextechProtobelt01})
-    Vaper.Flee:MenuElement({id = "RanduinsOmen", name = "Randuin's Omen", value = true, leftIcon = iconDb.RanduinsOmen})
-    Vaper.Flee:MenuElement({id = "RighteousGlory", name = "Righteous Glory", value = true, leftIcon = iconDb.RighteousGlory})
-    Vaper.Flee:MenuElement({id = "TwinShadows", name = "Twin Shadows", value = true, leftIcon = iconDb.TwinShadows})
-    Vaper.Flee:MenuElement({id = "YoumuusGhostblade", name = "Youmuu's Ghostblade", value = true, leftIcon = iconDb.YoumuusGhostblade})
+    Vaper.Flee:MenuElement({id = "BilgewaterCutlass", name = "Bilgewater Cutlass", value = true})
+    Vaper.Flee:MenuElement({id = "BladeoftheRuinedKing", name = "Blade of the Ruined King", value = true})
+    Vaper.Flee:MenuElement({id = "HextechGLP800", name = "Hextech GLP-800", value = true})
+    Vaper.Flee:MenuElement({id = "HextechGunblade", name = "Hextech Gunblade", value = true})
+    Vaper.Flee:MenuElement({id = "HextechProtobelt01", name = "Hextech Protobelt-01", value = true})
+    Vaper.Flee:MenuElement({id = "RanduinsOmen", name = "Randuin's Omen", value = true})
+    Vaper.Flee:MenuElement({id = "RighteousGlory", name = "Righteous Glory", value = true})
+    Vaper.Flee:MenuElement({id = "TwinShadows", name = "Twin Shadows", value = true})
+    Vaper.Flee:MenuElement({id = "YoumuusGhostblade", name = "Youmuu's Ghostblade", value = true})
 
     Vaper:MenuElement({type = MENU, id = "Shield", name = "Shield"})
-    Vaper.Shield:MenuElement({id = "Barrier", name = "Barrier", value = true, leftIcon = iconDb.Barrier})
+    Vaper.Shield:MenuElement({id = "Barrier", name = "Barrier", value = true})
     Vaper.Shield:MenuElement({id = "HPS1", name = "Health % to Shield", value = 15, min = 0, max = 100})
     Vaper.Shield:MenuElement({id = " ", name = " ", type = SPACE})
-    Vaper.Shield:MenuElement({id = "Stopwatch", name = "Stopwatch", value = true, leftIcon = iconDb.Stopwatch})
+    Vaper.Shield:MenuElement({id = "Stopwatch", name = "Stopwatch", value = true})
     Vaper.Shield:MenuElement({id = "HP1", name = "Health % to Shield", value = 15, min = 0, max = 100})
-    Vaper.Shield:MenuElement({id = "GargoyleStoneplate", name = "Gargoyle Stoneplate", value = true, leftIcon = iconDb.GargoyleStoneplate})
+    Vaper.Shield:MenuElement({id = "GargoyleStoneplate", name = "Gargoyle Stoneplate", value = true})
     Vaper.Shield:MenuElement({id = "HP2", name = "Health % to Shield", value = 15, min = 0, max = 100})
-    Vaper.Shield:MenuElement({id = "LocketoftheIronSolari", name = "Locket of the Iron Solari", value = true, leftIcon = iconDb.LocketoftheIronSolari})
+    Vaper.Shield:MenuElement({id = "LocketoftheIronSolari", name = "Locket of the Iron Solari", value = true})
     Vaper.Shield:MenuElement({id = "HP3", name = "Health % to Shield", value = 15, min = 0, max = 100})
-    Vaper.Shield:MenuElement({id = "SeraphsEmbrace", name = "Seraph's Embrace", value = true, leftIcon = iconDb.SeraphsEmbrace})
+    Vaper.Shield:MenuElement({id = "SeraphsEmbrace", name = "Seraph's Embrace", value = true})
     Vaper.Shield:MenuElement({id = "HP4", name = "Health % to Shield", value = 15, min = 0, max = 100})
-    Vaper.Shield:MenuElement({id = "WoogletsWitchcap", name = "Wooglet's Witchcap", value = true, leftIcon = iconDb.WoogletsWitchcap})
+    Vaper.Shield:MenuElement({id = "WoogletsWitchcap", name = "Wooglet's Witchcap", value = true})
     Vaper.Shield:MenuElement({id = "HP5", name = "Health % to Shield", value = 15, min = 0, max = 100})
-    Vaper.Shield:MenuElement({id = "ZhonyasHourglass", name = "Zhonya's Hourglass", value = true, leftIcon = iconDb.ZhonyasHourglass})
+    Vaper.Shield:MenuElement({id = "ZhonyasHourglass", name = "Zhonya's Hourglass", value = true})
     Vaper.Shield:MenuElement({id = "HP6", name = "Health % to Shield", value = 15, min = 0, max = 100})
 
     Vaper:MenuElement({type = MENU, id = "Heal", name = "Heal"})
-    Vaper.Heal:MenuElement({id = "Heal", name = "Heal", value = true, leftIcon = iconDb.Heal})
+    Vaper.Heal:MenuElement({id = "Heal", name = "Heal", value = true})
     Vaper.Heal:MenuElement({id = "HPS1", name = "Health % to Heal", value = 15, min = 0, max = 100})
     Vaper.Heal:MenuElement({id = " ", name = " ", type = SPACE})
-    Vaper.Heal:MenuElement({id = "Redemption", name = "Redemption", value = true, leftIcon = iconDb.Redemption})
+    Vaper.Heal:MenuElement({id = "Redemption", name = "Redemption", value = true})
     Vaper.Heal:MenuElement({id = "HP1", name = "Health % to Heal", value = 15, min = 0, max = 100})
 
     Vaper:MenuElement({type = MENU, id = "Auto", name = "Auto"})
-    Vaper.Auto:MenuElement({id = "Ignite", name = "Ignite", value = true, leftIcon = iconDb.Ignite})
+    Vaper.Auto:MenuElement({id = "Ignite", name = "Ignite", value = true})
 
     Vaper:MenuElement({type = MENU, id = "Cleanse", name = "Cleanse"})
-    Vaper.Cleanse:MenuElement({id = "Cleanse", name = "Cleanse", value = true, leftIcon = iconDb.Cleanse})
+    Vaper.Cleanse:MenuElement({id = "Cleanse", name = "Cleanse", value = true})
     Vaper.Cleanse:MenuElement({id = "DS1", name = "Duration to Cleanse", value = 1, min = .1, max = 5, step = .1})
     Vaper.Cleanse:MenuElement({id = " ", name = " ", type = SPACE})
-    Vaper.Cleanse:MenuElement({id = "QuicksilverSash", name = "Quicksilver Sash", value = true, leftIcon = iconDb.QuicksilverSash})
+    Vaper.Cleanse:MenuElement({id = "QuicksilverSash", name = "Quicksilver Sash", value = true})
     Vaper.Cleanse:MenuElement({id = "D1", name = "Duration to Cleanse", value = 1, min = .1, max = 5, step = .1})
-    Vaper.Cleanse:MenuElement({id = "MercurialScimitar", name = "Mercurial Scimitar", value = true, leftIcon = iconDb.MercurialScimitar})
+    Vaper.Cleanse:MenuElement({id = "MercurialScimitar", name = "Mercurial Scimitar", value = true})
     Vaper.Cleanse:MenuElement({id = "D2", name = "Duration to Cleanse", value = 1, min = .1, max = 5, step = .1})
-    Vaper.Cleanse:MenuElement({id = "MikaelsCrucible", name = "Mikael's Crucible", value = true, leftIcon = iconDb.MikaelsCrucible})
+    Vaper.Cleanse:MenuElement({id = "MikaelsCrucible", name = "Mikael's Crucible", value = true})
     Vaper.Cleanse:MenuElement({id = "D3", name = "Duration to Cleanse", value = 1, min = .1, max = 5, step = .1})
     Vaper.Cleanse:MenuElement({id = " ", name = " ", type = SPACE})
-    Vaper.Cleanse:MenuElement({id = "Stun", name = "Stun", value = true, leftIcon = iconDb.Stun})
-    Vaper.Cleanse:MenuElement({id = "Root", name = "Root", value = true, leftIcon = iconDb.Root})
-    Vaper.Cleanse:MenuElement({id = "Taunt", name = "Taunt", value = true, leftIcon = iconDb.Taunt})
-    Vaper.Cleanse:MenuElement({id = "Fear", name = "Fear", value = true, leftIcon = iconDb.Fear})
-    Vaper.Cleanse:MenuElement({id = "Charm", name = "Charm", value = true, leftIcon = iconDb.Charm})
-    Vaper.Cleanse:MenuElement({id = "Silence", name = "Silence", value = true, leftIcon = iconDb.Silence})
-    Vaper.Cleanse:MenuElement({id = "Slow", name = "Slow", value = true, leftIcon = iconDb.Slow})
-    Vaper.Cleanse:MenuElement({id = "Blind", name = "Blind", value = true, leftIcon = iconDb.Blind})
-    Vaper.Cleanse:MenuElement({id = "Disarm", name = "Disarm", value = true, leftIcon = iconDb.Disarm})
-    Vaper.Cleanse:MenuElement({id = "Sleep", name = "Sleep", value = true, leftIcon = iconDb.Sleep})
-    Vaper.Cleanse:MenuElement({id = "Nearsight", name = "Nearsight", value = true, leftIcon = iconDb.Nearsight})
-    Vaper.Cleanse:MenuElement({id = "Suppression", name = "Suppression", value = true, leftIcon = iconDb.Suppression})
+    Vaper.Cleanse:MenuElement({id = "Stun", name = "Stun", value = true})
+    Vaper.Cleanse:MenuElement({id = "Root", name = "Root", value = true})
+    Vaper.Cleanse:MenuElement({id = "Taunt", name = "Taunt", value = true})
+    Vaper.Cleanse:MenuElement({id = "Fear", name = "Fear", value = true})
+    Vaper.Cleanse:MenuElement({id = "Charm", name = "Charm", value = true})
+    Vaper.Cleanse:MenuElement({id = "Silence", name = "Silence", value = true})
+    Vaper.Cleanse:MenuElement({id = "Slow", name = "Slow", value = true})
+    Vaper.Cleanse:MenuElement({id = "Blind", name = "Blind", value = true})
+    Vaper.Cleanse:MenuElement({id = "Disarm", name = "Disarm", value = true})
+    Vaper.Cleanse:MenuElement({id = "Sleep", name = "Sleep", value = true})
+    Vaper.Cleanse:MenuElement({id = "Nearsight", name = "Nearsight", value = true})
+    Vaper.Cleanse:MenuElement({id = "Suppression", name = "Suppression", value = true})
 end
 
 function Utility:Tick()
@@ -981,9 +1125,11 @@ function Utility:Auto()
     local ExistIgnite = ExistSpell("SummonerDot")
     local IgniteSlot = SummonerSlot("SummonerDot")
     local IgniteDamage = 70 + 20 * myHero.levelData.lvl
-    local IgniteTarget = ClosestInjuredHero(600,foe,IgniteDamage,false)
+    local IgniteTarget = ClosestHero(600,foe)
     if ExistIgnite and Ready(IgniteSlot) and IgniteTarget and Vaper.Auto.Ignite:Value() then
-        Control.CastSpell(HKSPELL[IgniteSlot], IgniteTarget)
+        if IgniteDamage > IgniteTarget.health then
+            Control.CastSpell(HKSPELL[IgniteSlot], IgniteTarget)
+        end
     end
 end
 
