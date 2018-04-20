@@ -1051,7 +1051,9 @@ function Vladimir:Tick()
         end
         local Etarget = GetTarget(E.Range) 
         if Etarget and Vladimir.Combo.E:Value() then
-            self:CastE()
+            if Etarget:GetCollision(100, mathhuge, 0) == 0 then
+                self:CastE()
+            end
         end
         local Qtarget = GetTarget(Q.Range)
         if Qtarget and Vladimir.Combo.Q:Value() then
@@ -1065,7 +1067,9 @@ function Vladimir:Tick()
         end
         local Etarget = GetTarget(E.Range) 
         if Etarget and Vladimir.Harass.E:Value() then
-            self:CastE()
+            if Etarget:GetCollision(100, mathhuge, 0) == 0 then
+                self:CastE()
+            end
         end
         local Qtarget = GetTarget(Q.Range)
         if Qtarget and Vladimir.Harass.Q:Value() then
@@ -1107,7 +1111,7 @@ function Vladimir:CastQ(target)
 end
 
 function Vladimir:CastE()
-	if Ready(_E) and IsUp(_E) then
+    if Ready(_E) and IsUp(_E) then
         EnableOrb(false)
         Control.CastSpell(HK_E)
         EnableOrb(true)
@@ -1137,6 +1141,188 @@ function Vladimir:Draw()
 	    local xPos = Vladimir.Draw.Clear.xPos:Value()
 	    local yPos = Vladimir.Draw.Clear.yPos:Value()
         if Vladimir.Clear.T:Value() then
+		    Draw.Text("CLEAR ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("CLEAR OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+end
+
+class "Zyra"
+
+function Zyra:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Zyra:LoadSpells()
+    Q = { Range = 800, Delay = 0.625, Speed = mathhuge, Width = 100}
+    W = { Range = 850}
+    E = { Range = 1100, Delay = 0.25, Speed = 1150, Width = 70}
+    R = { Range = 700, Delay = 1.775, Speed = mathhuge, Width = 575}
+end
+
+function Zyra:LoadMenu()
+	Zyra = MenuElement({type = MENU, id = "Zyra", name = "Rugal Vaper - Zyra"})
+    
+    Zyra:MenuElement({id = "Enable", name = "Enable Hero", value = true})
+
+    Zyra:MenuElement({type = MENU, id = "Combo", name = "Combo"})
+    Zyra.Combo:MenuElement({id = "Q", name = "Q - Deadly Spines", value = true})
+    Zyra.Combo:MenuElement({id = "E", name = "E - Grasping Roots", value = true})
+    Zyra.Combo:MenuElement({id = "R", name = "R - Stranglethorns", value = true})
+    Zyra.Combo:MenuElement({id = "X", name = "R Enemies", value = 2, min = 1, max = 5})
+    
+    Zyra:MenuElement({type = MENU, id = "Harass", name = "Harass"})
+    Zyra.Harass:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("S"), toggle = true, value = true})
+    Zyra.Harass:MenuElement({id = "Q", name = "Q - Deadly Spines", value = true})
+    Zyra.Harass:MenuElement({id = "AQ", name = "Auto Q", value = true})
+    Zyra.Harass:MenuElement({id = "E", name = "E - Grasping Roots", value = true})
+    Zyra.Harass:MenuElement({id = "AE", name = "Auto E", value = true})
+    Zyra.Harass:MenuElement({id = "R", name = "R - Stranglethorns", value = true})
+    Zyra.Harass:MenuElement({id = "X", name = "R Enemies", value = 2, min = 1, max = 5})
+    
+    Zyra:MenuElement({type = MENU, id = "Clear", name = "Clear"})
+    Zyra.Clear:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
+    Zyra.Clear:MenuElement({id = "Q", name = "Q - Deadly Spines", value = true})
+    Zyra.Clear:MenuElement({id = "E", name = "E - Grasping Roots", value = true})
+    
+    Zyra:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Zyra.Draw:MenuElement({id = "Q", name = "Q Range", value = true})
+    Zyra.Draw:MenuElement({id = "E", name = "E Range", value = true})
+    Zyra.Draw:MenuElement({id = "R", name = "R Range", value = true})
+    Zyra.Draw:MenuElement({id = "Harass", name = "Harass Status", type = MENU})
+    Zyra.Draw.Harass:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Zyra.Draw.Harass:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Zyra.Draw.Harass:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Zyra.Draw.Harass:MenuElement({id = "yPos", name = "Text Y Position", value = -140, min = -1000, max = 1000, step = 10})
+    Zyra.Draw:MenuElement({id = "Clear", name = "Clear Status", type = MENU})
+    Zyra.Draw.Clear:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Zyra.Draw.Clear:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Zyra.Draw.Clear:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Zyra.Draw.Clear:MenuElement({id = "yPos", name = "Text Y Position", value = -130, min = -1000, max = 1000, step = 10})
+end
+
+function Zyra:Tick()
+    if not Zyra.Enable:Value() then return end
+    if Zyra.Harass.T:Value() then
+        local Etarget = GetTarget(E.Range)
+        if Etarget and Zyra.Harass.AE:Value() then
+            self:CastE(Etarget,2)
+        end
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Zyra.Harass.AQ:Value() then
+            self:CastQ(Qtarget,2)
+        end
+    end
+    local mode = GetMode()
+    if mode == "Combo" then
+        local Rtarget = GetTarget(R.Range)
+        if Rtarget and HeroesAround(R.Width,Rtarget.pos,foe) >= Zyra.Combo.X:Value() and Zyra.Combo.R:Value() then
+            self:CastR(Rtarget)
+        end
+        local Etarget = GetTarget(E.Range) 
+        if Etarget and Zyra.Combo.E:Value() then
+            self:CastE(Etarget)
+        end
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Zyra.Combo.Q:Value() then
+            self:CastQ(Qtarget)
+        end
+    end
+    if mode == "Harass" and Zyra.Harass.T:Value() then
+        local Rtarget = GetTarget(R.Range)
+        if Rtarget and HeroesAround(R.Width,Rtarget.pos,foe) >= Zyra.Harass.X:Value() and Zyra.Harass.R:Value() then
+            self:CastR(Rtarget)
+        end
+        local Etarget = GetTarget(E.Range) 
+        if Etarget and Zyra.Harass.E:Value() then
+            self:CastE(Etarget)
+        end
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Zyra.Harass.Q:Value() then
+            self:CastQ(Qtarget)
+        end
+    end
+    if mode == "Clear" and Zyra.Clear.T:Value() then
+        local Etarget = GetClearMinion(E.Range)
+        if Etarget and Zyra.Clear.E:Value() then
+            self:CastE(Etarget)
+        end
+        local Qtarget = GetClearMinion(Q.Range)
+        if Qtarget and Zyra.Clear.Q:Value() then
+            self:CastQ(Qtarget)
+        end
+    end
+end
+
+function Zyra:CastR(target,precision)
+    local precision = precision or 1
+	if Ready(_R) and IsUp(_R) then
+        if target and HPred:CanTarget(target) then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, R.Range, R.Delay, R.Speed, R.Width, false, nil)
+            if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= R.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_R, aimPosition)
+                EnableOrb(true)
+            end
+        end
+    end
+end
+
+function Zyra:CastQ(target,precision)
+    local precision = precision or 1
+	if Ready(_Q) and IsUp(_Q) then
+        if target and HPred:CanTarget(target) then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, true, nil)
+            if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, aimPosition)
+                EnableOrb(true)
+            end
+        end
+    end
+end
+
+function Zyra:CastE(target,precision)
+    local precision = precision or 1
+	if Ready(_E) and IsUp(_E) then
+        if target and HPred:CanTarget(target) then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, E.Range, E.Delay, E.Speed, E.Width, true, nil)
+            if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= E.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_E, aimPosition)
+                EnableOrb(true)
+            end
+        end
+    end
+end
+
+function Zyra:Draw()
+    if not Zyra.Enable:Value() then return end
+    local target = GetTarget(2000)
+    if Zyra.dead then return end
+    if Zyra.Draw.Q:Value() and Ready(_Q) then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Zyra.Draw.E:Value() and Ready(_E) then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    if Zyra.Draw.R:Value() and Ready(_R) then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    local textPos = myHero.pos:To2D()
+    if Zyra.Draw.Harass.Text:Value() then
+        local size = Zyra.Draw.Harass.Size:Value()
+	    local xPos = Zyra.Draw.Harass.xPos:Value()
+	    local yPos = Zyra.Draw.Harass.yPos:Value()
+        if Zyra.Harass.T:Value() then
+		    Draw.Text("HARASS ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("HARASS OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+    if Zyra.Draw.Clear.Text:Value() then
+        local size = Zyra.Draw.Clear.Size:Value()
+	    local xPos = Zyra.Draw.Clear.xPos:Value()
+	    local yPos = Zyra.Draw.Clear.yPos:Value()
+        if Zyra.Clear.T:Value() then
 		    Draw.Text("CLEAR ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
 	    else
             Draw.Text("CLEAR OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
@@ -1763,7 +1949,7 @@ function Utility:Cleanse()
     end
 end
 
-local Heroes = {"Ahri","DrMundo","Jayce","Vladimir"}
+local Heroes = {"Ahri","DrMundo","Jayce","Vladimir","Zyra"}
 local Heroloaded = false
 local ActivatorLoaded = false
 Callback.Add("Load", function()
