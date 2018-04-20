@@ -253,10 +253,6 @@ function Ahri:LoadMenu()
     Ahri.Clear:MenuElement({id = "W", name = "W - Fox-Fire", value = true})
     Ahri.Clear:MenuElement({id = "E", name = "E - Charm", value = true})
     
-    Ahri:MenuElement({type = MENU, id = "Flee", name = "Flee"})
-    Ahri.Flee:MenuElement({id = "Q", name = "Q - Orb of Deception", value = true})
-    Ahri.Flee:MenuElement({id = "E", name = "E - Charm", value = true})
-    
     Ahri:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
     Ahri.Draw:MenuElement({id = "Q", name = "Q Range", value = true})
     Ahri.Draw:MenuElement({id = "W", name = "W Range", value = true})
@@ -328,16 +324,6 @@ function Ahri:Tick()
             self:CastW()
         end
     end
-    if mode == "Flee" then
-        local Etarget = ClosestHero(E.Range,foe)
-        if Etarget and Ahri.Flee.E:Value() then
-            self:CastE(Etarget)
-        end
-        local vec = myHero.pos:Extended(mousePos, -200)
-        if Ahri.Flee.Q:Value() then
-            self:CastQFlee(vec)
-        end
-    end
 end
 
 function Ahri:CastQ(target,precision)
@@ -385,14 +371,6 @@ function Ahri:CastEMinion(target)
                 Control.CastSpell(HK_E, pred)
             end
         end
-    end
-end
-
-function Ahri:CastQFlee(pos)
-	if Ready(_Q) and IsUp(_Q) then
-        EnableOrb(false)
-        Control.CastSpell(HK_Q,pos)
-        EnableOrb(true)
     end
 end
 
@@ -473,13 +451,6 @@ function DrMundo:LoadMenu()
     DrMundo.Clear:MenuElement({id = "W", name = "W - Burning Agony", value = true})
     DrMundo.Clear:MenuElement({id = "E", name = "E - Masochism", value = true})
     
-    DrMundo:MenuElement({type = MENU, id = "Lasthit", name = "Lasthit"})
-    DrMundo.Lasthit:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
-    DrMundo.Lasthit:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true})
-    
-    DrMundo:MenuElement({type = MENU, id = "Flee", name = "Flee"})
-    DrMundo.Flee:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true})
-    
     DrMundo:MenuElement({type = MENU, id = "Lifesaver", name = "Life Saver"})
     DrMundo.Lifesaver:MenuElement({id = "R", name = "R - Sadism", value = true})
     DrMundo.Lifesaver:MenuElement({id = "HP", name = "Health % to Life Saver", value = 15, min = 0, max = 100})
@@ -558,18 +529,6 @@ function DrMundo:Tick()
             self:CastE()
         end
     end
-    if (mode == "Lasthit" or mode == "LastHit") and DrMundo.Lasthit.T:Value() then
-        local Qtarget = self:GetQMinion()
-        if Qtarget and DrMundo.Lasthit.Q:Value() and GetDistance(Qtarget.pos) > 400 then
-            self:CastQMinion(Qtarget)
-        end
-    end
-    if mode == "Flee" then
-        local Qtarget = ClosestHero(Q.Range,foe)
-        if Qtarget and DrMundo.Flee.Q:Value() then
-            self:CastQ(Qtarget)
-        end
-    end
 end
 
 function DrMundo:CastQ(target,precision)
@@ -582,16 +541,6 @@ function DrMundo:CastQ(target,precision)
                 Control.CastSpell(HK_Q, aimPosition)
                 EnableOrb(true)
             end
-        end
-    end
-end
-
-function DrMundo:GetQMinion()
-    for i = 1, Game.MinionCount() do
-        local minion = Game.Minion(i)
-        local Qdamage = 30 + 50 * myHero:GetSpellData(_Q).level
-        if GetDistance(minion.pos) < Q.Range and not minion.dead and minion.team == foe and Qdamage > minion.health then
-            return minion
         end
     end
 end
@@ -658,16 +607,6 @@ function DrMundo:Draw()
             Draw.Text("CLEAR OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
         end
     end
-    if DrMundo.Draw.Lasthit.Text:Value() then
-        local size = DrMundo.Draw.Lasthit.Size:Value()
-	    local xPos = DrMundo.Draw.Lasthit.xPos:Value()
-	    local yPos = DrMundo.Draw.Lasthit.yPos:Value()
-        if DrMundo.Lasthit.T:Value() then
-		    Draw.Text("LASTHIT ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
-	    else
-            Draw.Text("LASTHIT OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
-        end
-	end
 end
 
 class "Jayce"
@@ -722,10 +661,6 @@ function Jayce:LoadMenu()
     Jayce.Clear:MenuElement({id = "Q2", name = "Q - To the Skies!", value = true})
     Jayce.Clear:MenuElement({id = "W2", name = "W - Lightning Field", value = true})
     Jayce.Clear:MenuElement({id = "E2", name = "E - Thundering Blow", value = true})
-    
-    Jayce:MenuElement({type = MENU, id = "Flee", name = "Flee"})
-    Jayce.Flee:MenuElement({id = "E", name = "E - Acceleration Gate", value = true})
-    Jayce.Flee:MenuElement({id = "E2", name = "E - Thundering Blow", value = true})
     
     Jayce:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
     Jayce.Draw:MenuElement({id = "Q", name = "Q Range", value = true})
@@ -846,19 +781,6 @@ function Jayce:Tick()
             end
         end
     end
-    if mode == "Flee" then
-        if form == "Ranged" then
-            local vec = myHero.pos:Extended(mousePos, 200)
-            if Jayce.Flee.E:Value() then
-                self:CastE(vec)
-            end
-        else
-            local Etarget = ClosestHero(E2.Range,foe)
-            if Etarget and Jayce.Flee.E2:Value() then
-                self:CastE2(Etarget)
-            end
-        end
-    end
 end
 
 function Jayce:CurrentForm()
@@ -935,14 +857,6 @@ function Jayce:CastE2(target)
     end
 end
 
-function Jayce:CastR()
-	if Ready(_R) and IsUp(_R) then
-        EnableOrb(false)
-        Control.CastSpell(HK_R)
-        EnableOrb(true)
-    end
-end
-
 function Jayce:Draw()
     if not Jayce.Enable:Value() then return end
     local target = GetTarget(2000)
@@ -973,6 +887,353 @@ function Jayce:Draw()
 	    local xPos = Jayce.Draw.Clear.xPos:Value()
 	    local yPos = Jayce.Draw.Clear.yPos:Value()
         if Jayce.Clear.T:Value() then
+		    Draw.Text("CLEAR ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("CLEAR OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+end
+
+class "Soraka"
+
+function Soraka:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Soraka:LoadSpells()
+    Q = { Range = 800, Delay = 0.25, Width = 235, Speed = 1150}
+    W = { Range = 550}
+    E = { Range = 925, Delay = 0.25, Width = 300, Speed = mathhuge}
+    R = { Range = 25000}
+end
+
+function Soraka:LoadMenu()
+	Soraka = MenuElement({type = MENU, id = "Soraka", name = "Rugal Vaper - Soraka"})
+    
+    Soraka:MenuElement({id = "Enable", name = "Enable Hero", value = true})
+
+    Soraka:MenuElement({type = MENU, id = "Combo", name = "Combo"})
+    Soraka.Combo:MenuElement({id = "Q", name = "Q - Starcall", value = true})
+    Soraka.Combo:MenuElement({id = "E", name = "E - Equinox", value = true})
+    
+    Soraka:MenuElement({type = MENU, id = "Harass", name = "Harass"})
+    Soraka.Harass:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("S"), toggle = true, value = true})
+    Soraka.Harass:MenuElement({id = "Q", name = "Q - Starcall", value = true})
+    Soraka.Harass:MenuElement({id = "AQ", name = "Auto Q", value = true})
+    Soraka.Harass:MenuElement({id = "E", name = "E - Equinox", value = true})
+    Soraka.Harass:MenuElement({id = "AE", name = "Auto E", value = true})
+    
+    Soraka:MenuElement({type = MENU, id = "Clear", name = "Clear"})
+    Soraka.Clear:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
+    Soraka.Clear:MenuElement({id = "Q", name = "Q - Starcall", value = true})
+
+    Soraka:MenuElement({type = MENU, id = "Lifesaver", name = "Life Saver"})
+    Soraka.Lifesaver:MenuElement({id = "W", name = "W - Astral Infusion", value = true})
+    Soraka.Lifesaver:MenuElement({id = "WHP", name = "Health % to Life Saver", value = 80, min = 0, max = 100})
+    Soraka.Lifesaver:MenuElement({id = "SHP", name = "Soraka Health % to Life Saver", value = 40, min = 5, max = 100})
+    Soraka.Lifesaver:MenuElement({id = "R", name = "R - Wish", value = true})
+    Soraka.Lifesaver:MenuElement({id = "HP", name = "Health % to Life Saver", value = 8, min = 0, max = 100})
+    
+    Soraka:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Soraka.Draw:MenuElement({id = "Q", name = "Q Range", value = true})
+    Soraka.Draw:MenuElement({id = "W", name = "W Range", value = true})
+    Soraka.Draw:MenuElement({id = "E", name = "E Range", value = true})
+    Soraka.Draw:MenuElement({id = "Harass", name = "Harass Status", type = MENU})
+    Soraka.Draw.Harass:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Soraka.Draw.Harass:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Soraka.Draw.Harass:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Soraka.Draw.Harass:MenuElement({id = "yPos", name = "Text Y Position", value = -140, min = -1000, max = 1000, step = 10})
+    Soraka.Draw:MenuElement({id = "Clear", name = "Clear Status", type = MENU})
+    Soraka.Draw.Clear:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Soraka.Draw.Clear:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Soraka.Draw.Clear:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Soraka.Draw.Clear:MenuElement({id = "yPos", name = "Text Y Position", value = -130, min = -1000, max = 1000, step = 10})
+end
+
+function Soraka:Tick()
+    if not Soraka.Enable:Value() then return end
+    local Wtarget = ClosestInjuredHero(W.Range,friend,Soraka.Lifesaver.WHP:Value(),false)
+    if Wtarget and HeroesAround(1500,Wtarget.pos) ~= 0 and Soraka.Lifesaver.W:Value() and Hp() > Soraka.Lifesaver.SHP:Value() then
+        self:CastW(Wtarget)
+    end
+    local Rtarget = ClosestInjuredHero(R.Range,friend,Soraka.Lifesaver.HP:Value(),true)
+    if Rtarget and HeroesAround(1500,Rtarget.pos) ~= 0 and Soraka.Lifesaver.R:Value() then
+        self:CastR()
+    end
+    if Soraka.Harass.T:Value() then
+        local Etarget = GetTarget(E.Range)
+        if Etarget and Soraka.Harass.AE:Value() then
+            self:CastE(Etarget,2)
+        end
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Soraka.Harass.AQ:Value() then
+            self:CastQ(Qtarget,2)
+        end
+    end
+    local mode = GetMode()
+    if mode == "Combo" then
+        local Etarget = GetTarget(E.Range) 
+        if Etarget and Soraka.Combo.E:Value() then
+            self:CastE(Etarget)
+        end
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Soraka.Combo.Q:Value() then
+            self:CastQ(Qtarget)
+        end
+    end
+    if mode == "Harass" and Soraka.Harass.T:Value() then
+        local Etarget = GetTarget(E.Range) 
+        if Etarget and Soraka.Harass.E:Value() then
+            self:CastE(Etarget)
+        end
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Soraka.Harass.Q:Value() then
+            self:CastQ(Qtarget)
+        end
+    end
+    if mode == "Clear" and Soraka.Clear.T:Value() then
+        local Qtarget = GetClearMinion(Q.Range)
+        if Qtarget and Soraka.Clear.Q:Value() then
+            self:CastQMinion(Qtarget)
+        end
+    end
+end
+
+function Soraka:CastQ(target,precision)
+    local precision = precision or 1
+	if Ready(_Q) and IsUp(_Q) then
+        if target and HPred:CanTarget(target) then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, false, nil)
+            if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, aimPosition)
+                EnableOrb(true)
+            end
+        end
+    end
+end
+
+function Soraka:CastE(target,precision)
+    local precision = precision or 1
+	if Ready(_E) and IsUp(_E) then
+        if target and HPred:CanTarget(target) then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, E.Range, E.Delay, E.Speed, E.Width, false, nil)
+            if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= E.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_E, aimPosition)
+                EnableOrb(true)
+            end
+        end
+    end
+end
+
+function Soraka:CastQMinion(target)
+	if Ready(_Q) and IsUp(_Q) then
+        if target then
+            local pred = target:GetPrediction(Q.Speed, Q.Delay)
+            Control.CastSpell(HK_Q, pred)
+        end
+    end
+end
+
+function Soraka:CastW(target)
+	if Ready(_W) and IsUp(_W) then
+        EnableOrb(false)
+        Control.CastSpell(HK_W,target)
+        EnableOrb(true)
+    end
+end
+
+function Soraka:Draw()
+    if not Soraka.Enable:Value() then return end
+    local target = GetTarget(2000)
+    if Soraka.dead then return end
+    if Soraka.Draw.Q:Value() and Ready(_Q) then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Soraka.Draw.W:Value() and Ready(_W) then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if Soraka.Draw.E:Value() and Ready(_E) then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    local textPos = myHero.pos:To2D()
+    if Soraka.Draw.Harass.Text:Value() then
+        local size = Soraka.Draw.Harass.Size:Value()
+	    local xPos = Soraka.Draw.Harass.xPos:Value()
+	    local yPos = Soraka.Draw.Harass.yPos:Value()
+        if Soraka.Harass.T:Value() then
+		    Draw.Text("HARASS ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("HARASS OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+    if Soraka.Draw.Clear.Text:Value() then
+        local size = Soraka.Draw.Clear.Size:Value()
+	    local xPos = Soraka.Draw.Clear.xPos:Value()
+	    local yPos = Soraka.Draw.Clear.yPos:Value()
+        if Soraka.Clear.T:Value() then
+		    Draw.Text("CLEAR ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("CLEAR OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+end
+
+class "Tryndamere"
+
+function Tryndamere:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Tryndamere:LoadSpells()
+    Q = { Range = 0}
+    W = { Range = 850}
+    E = { Range = 660, Delay = 0.01, Width = 225, Speed = 1300}
+    R = { Range = 0}
+end
+
+function Tryndamere:LoadMenu()
+	Tryndamere = MenuElement({type = MENU, id = "Tryndamere", name = "Rugal Vaper - Tryndamere"})
+    
+    Tryndamere:MenuElement({id = "Enable", name = "Enable Hero", value = true})
+    
+    Tryndamere:MenuElement({type = MENU, id = "Combo", name = "Combo"})
+    Tryndamere.Combo:MenuElement({id = "W", name = "W - Mocking Shout", value = true})
+    Tryndamere.Combo:MenuElement({id = "E", name = "E - Spinning Slash", value = true})
+    
+    Tryndamere:MenuElement({type = MENU, id = "Harass", name = "Harass"})
+    Tryndamere.Harass:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("S"), toggle = true, value = true})
+    Tryndamere.Harass:MenuElement({id = "W", name = "W - Mocking Shout", value = true})
+    Tryndamere.Harass:MenuElement({id = "E", name = "E - Spinning Slash", value = true})
+    
+    Tryndamere:MenuElement({type = MENU, id = "Clear", name = "Clear"})
+    Tryndamere.Clear:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
+    Tryndamere.Clear:MenuElement({id = "E", name = "E - Spinning Slash", value = true})
+    
+    Tryndamere:MenuElement({type = MENU, id = "Lifesaver", name = "Life Saver"})
+    Tryndamere.Lifesaver:MenuElement({id = "Q", name = "Q - Bloodlust", value = true})
+    Tryndamere.Lifesaver:MenuElement({id = "QHP", name = "Health % to Life Saver", value = 15, min = 0, max = 100})
+    Tryndamere.Lifesaver:MenuElement({id = "R", name = "R - Undying Rage", value = true})
+    Tryndamere.Lifesaver:MenuElement({id = "HP", name = "Health % to Life Saver", value = 8, min = 0, max = 100})
+    
+    Tryndamere:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Tryndamere.Draw:MenuElement({id = "W", name = "W Range", value = true})
+    Tryndamere.Draw:MenuElement({id = "E", name = "E Range", value = true})
+    Tryndamere.Draw:MenuElement({id = "Harass", name = "Harass Status", type = MENU})
+    Tryndamere.Draw.Harass:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Tryndamere.Draw.Harass:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Tryndamere.Draw.Harass:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Tryndamere.Draw.Harass:MenuElement({id = "yPos", name = "Text Y Position", value = -140, min = -1000, max = 1000, step = 10})
+    Tryndamere.Draw:MenuElement({id = "Clear", name = "Clear Status", type = MENU})
+    Tryndamere.Draw.Clear:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Tryndamere.Draw.Clear:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Tryndamere.Draw.Clear:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Tryndamere.Draw.Clear:MenuElement({id = "yPos", name = "Text Y Position", value = -130, min = -1000, max = 1000, step = 10})
+    Tryndamere.Draw:MenuElement({id = "Lasthit", name = "Lasthit Status", type = MENU})
+    Tryndamere.Draw.Lasthit:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Tryndamere.Draw.Lasthit:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Tryndamere.Draw.Lasthit:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Tryndamere.Draw.Lasthit:MenuElement({id = "yPos", name = "Text Y Position", value = -120, min = -1000, max = 1000, step = 10})
+end
+
+function Tryndamere:Tick()
+    if not Tryndamere.Enable:Value() then return end
+    if Hp() < Tryndamere.Lifesaver.QHP:Value() and HeroesAround(1500,myHero.pos) ~= 0 and Tryndamere.Lifesaver.Q:Value() then
+        self:CastQ()
+    end
+    if Hp() < Tryndamere.Lifesaver.HP:Value() and HeroesAround(1500,myHero.pos) ~= 0 and Tryndamere.Lifesaver.R:Value() then
+        self:CastR()
+    end
+    local mode = GetMode()
+    if mode == "Combo" then
+        local Wtarget = GetTarget(W.Range) 
+        if Wtarget and Tryndamere.Combo.W:Value() then
+            self:CastW()
+        end
+        local Etarget = GetTarget(E.Range) 
+        if Etarget and Tryndamere.Combo.E:Value() then
+            self:CastE(Etarget)
+        end
+    end
+    if mode == "Harass" and Tryndamere.Harass.T:Value() then
+        local Wtarget = GetTarget(W.Range) 
+        if Wtarget and Tryndamere.Harass.W:Value() then
+            self:CastW()
+        end
+        local Etarget = GetTarget(E.Range) 
+        if Etarget and Tryndamere.Harass.E:Value() then
+            self:CastE(Etarget)
+        end
+    end
+    if mode == "Clear" and Tryndamere.Clear.T:Value() then
+        local Etarget = GetClearMinion(E.Range)
+        if Etarget and Tryndamere.Clear.E:Value() then
+            self:CastE(Etarget)
+        end
+    end
+end
+
+function Tryndamere:CastW()
+	if Ready(_W) and IsUp(_W) then
+        EnableOrb(false)
+        Control.CastSpell(HK_W)
+        EnableOrb(true)
+    end
+end
+
+function Tryndamere:CastE(target,precision)
+    local precision = precision or 1
+	if Ready(_E) and IsUp(_E) then
+        if target and HPred:CanTarget(target) then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, E.Range, E.Delay, E.Speed, E.Width, false, nil)
+            if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= E.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_E, aimPosition)
+                EnableOrb(true)
+            end
+        end
+    end
+end
+
+function Tryndamere:CastR()
+	if Ready(_R) and IsUp(_R) then
+        EnableOrb(false)
+        Control.CastSpell(HK_R)
+        EnableOrb(true)
+    end
+end
+
+function Tryndamere:CastQ()
+	if Ready(_Q) and IsUp(_Q) then
+        EnableOrb(false)
+        Control.CastSpell(HK_Q)
+        EnableOrb(true)
+    end
+end
+
+function Tryndamere:Draw()
+    if not Tryndamere.Enable:Value() then return end
+    local target = GetTarget(2000)
+    if Tryndamere.dead then return end
+    if Tryndamere.Draw.W:Value() and Ready(_W) then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if Tryndamere.Draw.E:Value() and Ready(_E) then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    local textPos = myHero.pos:To2D()
+    if Tryndamere.Draw.Harass.Text:Value() then
+        local size = Tryndamere.Draw.Harass.Size:Value()
+	    local xPos = Tryndamere.Draw.Harass.xPos:Value()
+	    local yPos = Tryndamere.Draw.Harass.yPos:Value()
+        if Tryndamere.Harass.T:Value() then
+		    Draw.Text("HARASS ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("HARASS OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+    if Tryndamere.Draw.Clear.Text:Value() then
+        local size = Tryndamere.Draw.Clear.Size:Value()
+	    local xPos = Tryndamere.Draw.Clear.xPos:Value()
+	    local yPos = Tryndamere.Draw.Clear.yPos:Value()
+        if Tryndamere.Clear.T:Value() then
 		    Draw.Text("CLEAR ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
 	    else
             Draw.Text("CLEAR OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
@@ -1276,7 +1537,7 @@ function Zyra:CastQ(target,precision)
     local precision = precision or 1
 	if Ready(_Q) and IsUp(_Q) then
         if target and HPred:CanTarget(target) then
-            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, true, nil)
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, false, nil)
             if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
                 EnableOrb(false)
                 Control.CastSpell(HK_Q, aimPosition)
@@ -1949,7 +2210,7 @@ function Utility:Cleanse()
     end
 end
 
-local Heroes = {"Ahri","DrMundo","Jayce","Vladimir","Zyra"}
+local Heroes = {"Ahri","DrMundo","Jayce","Soraka","Tryndamere","Vladimir","Zyra"}
 local Heroloaded = false
 local ActivatorLoaded = false
 Callback.Add("Load", function()
