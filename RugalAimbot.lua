@@ -4596,6 +4596,394 @@ function Ivern:Draw()
     end
 end
 
+class "Janna"
+
+function Janna:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Janna:LoadSpells()
+    Q = { Range = 1750, Delay = 0, Speed = 667, Width = 120}
+    W = { Range = 550 + myHero.boundingRadius}
+    E = { Range = 800}
+    R = { Range = 725}
+end
+
+function Janna:LoadMenu()
+	Janna = MenuElement({type = MENU, id = "Janna", name = "Rugal Aimbot "..myHero.charName})
+	Janna:MenuElement({type = MENU, id = "Spells", name = "Spells"})
+    Janna.Spells:MenuElement({id = "Q", name = "Q", key = string.byte("Q")})
+    Janna.Spells:MenuElement({id = "QSearch", name = "Q Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Janna.Spells:MenuElement({id = "W", name = "W", key = string.byte("W")})
+    Janna.Spells:MenuElement({id = "WSearch", name = "W Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Janna.Spells:MenuElement({id = "E", name = "E", key = string.byte("E")})
+    Janna.Spells:MenuElement({id = "ESearch", name = "E Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Janna.Spells:MenuElement({id = "R", name = "R", key = string.byte("R")})
+	Janna:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Janna.Draw:MenuElement({id = "Q", name = "Q range", value = true})
+    Janna.Draw:MenuElement({id = "W", name = "W range", value = true})
+    Janna.Draw:MenuElement({id = "E", name = "E range", value = true})
+    Janna.Draw:MenuElement({id = "R", name = "R range", value = true})
+    Janna.Draw:MenuElement({id = "Search", name = "Search ranges", value = false})
+end
+
+function Janna:Tick()
+    self:Spells()
+end
+
+function Janna:Spells()
+	local target = GetTarget(3500)
+    if Janna.Spells.Q:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Janna.Spells.QSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_Q, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Janna.Spells.W:Value() then
+        if target and GetDistance(target.pos) < W.Range and GetDistance(target.pos,Game.mousePos()) < Janna.Spells.WSearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_W, target)
+            EnableOrb(true)
+        else
+            local foeminion = ClosestMinion(W.Range,foe)
+            if foeminion and GetDistance(foeminion.pos,Game.mousePos()) < Janna.Spells.WSearch:Value() then
+                EnableOrb(false)
+                Control.CastSpell(HK_W, foeminion)
+                EnableOrb(true)
+            else
+                local neutralminion = ClosestMinion(W.Range,neutral)
+                if neutralminion and GetDistance(neutralminion.pos,Game.mousePos()) < Janna.Spells.WSearch:Value() then
+                    EnableOrb(false)
+                    Control.CastSpell(HK_W, neutralminion)
+                    EnableOrb(true)
+                end
+            end
+        end
+    end
+    if Janna.Spells.E:Value() then
+        local ally = ClosestHero(E.Range,friend)
+        if ally and GetDistance(ally.pos) < E.Range and GetDistance(ally.pos,Game.mousePos()) < Janna.Spells.ESearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_E, ally)
+            EnableOrb(true)
+        end
+    end
+    if Janna.Spells.R:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_R)
+        EnableOrb(true)
+    end
+end
+
+function Janna:Draw()
+    if myHero.dead then return end
+    if Janna.Draw.Q:Value() then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Janna.Draw.W:Value() then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if Janna.Draw.E:Value() then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    if Janna.Draw.R:Value() then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    if Janna.Draw.Search:Value() then 
+        Draw.Circle(Game.mousePos(), Janna.Spells.QSearch:Value(), 1,  Draw.Color(255, 000, 000, 255))
+        Draw.Circle(Game.mousePos(), Janna.Spells.WSearch:Value(), 1,  Draw.Color(255, 000, 255, 000))
+        Draw.Circle(Game.mousePos(), Janna.Spells.ESearch:Value(), 1,  Draw.Color(255, 255, 255, 000))
+    end
+end
+
+class "JarvanIV"
+
+function JarvanIV:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function JarvanIV:LoadSpells()
+    Q = { Range = 770, Delay = 0.4, Speed = mathhuge, Width = 60}
+    W = { Range = 625}
+    E = { Range = 860, Delay = 0.01, Speed = 3440, Width = 175}
+    R = { Range = 650}
+end
+
+function JarvanIV:LoadMenu()
+	JarvanIV = MenuElement({type = MENU, id = "JarvanIV", name = "Rugal Aimbot "..myHero.charName})
+	JarvanIV:MenuElement({type = MENU, id = "Spells", name = "Spells"})
+    JarvanIV.Spells:MenuElement({id = "Q", name = "Q", key = string.byte("Q")})
+    JarvanIV.Spells:MenuElement({id = "QSearch", name = "Q Search Range", min = 50, max = 3500, value = 250, step = 10})
+    JarvanIV.Spells:MenuElement({id = "W", name = "W", key = string.byte("W")})
+    JarvanIV.Spells:MenuElement({id = "E", name = "E", key = string.byte("E")})
+    JarvanIV.Spells:MenuElement({id = "ESearch", name = "E Search Range", min = 50, max = 3500, value = 250, step = 10})
+    JarvanIV.Spells:MenuElement({id = "R", name = "R", key = string.byte("R")})
+    JarvanIV.Spells:MenuElement({id = "RSearch", name = "R Search Range", min = 50, max = 3500, value = 250, step = 10})
+	JarvanIV:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    JarvanIV.Draw:MenuElement({id = "Q", name = "Q range", value = true})
+    JarvanIV.Draw:MenuElement({id = "W", name = "W range", value = true})
+    JarvanIV.Draw:MenuElement({id = "E", name = "E range", value = true})
+    JarvanIV.Draw:MenuElement({id = "R", name = "R range", value = true})
+    JarvanIV.Draw:MenuElement({id = "Search", name = "Search ranges", value = false})
+end
+
+function JarvanIV:Tick()
+    self:Spells()
+end
+
+function JarvanIV:Spells()
+	local target = GetTarget(3500)
+    if JarvanIV.Spells.Q:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < JarvanIV.Spells.QSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_Q, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if JarvanIV.Spells.E:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < JarvanIV.Spells.ESearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, E.Range, E.Delay, E.Speed, E.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= E.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_E, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_E, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_E, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if JarvanIV.Spells.R:Value() then
+        if target and GetDistance(target.pos) < R.Range and GetDistance(target.pos,Game.mousePos()) < JarvanIV.Spells.RSearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_R, target)
+            EnableOrb(true)
+        end
+    end
+	if JarvanIV.Spells.W:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_W)
+        EnableOrb(true)
+    end
+end
+
+function JarvanIV:Draw()
+    if myHero.dead then return end
+    if JarvanIV.Draw.Q:Value() then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if JarvanIV.Draw.W:Value() then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if JarvanIV.Draw.E:Value() then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    if JarvanIV.Draw.R:Value() then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    if JarvanIV.Draw.Search:Value() then 
+        Draw.Circle(Game.mousePos(), JarvanIV.Spells.QSearch:Value(), 1,  Draw.Color(255, 000, 000, 255))
+        Draw.Circle(Game.mousePos(), JarvanIV.Spells.ESearch:Value(), 1,  Draw.Color(255, 255, 255, 000))
+        Draw.Circle(Game.mousePos(), JarvanIV.Spells.RSearch:Value(), 1,  Draw.Color(255, 255, 000, 000))
+    end
+end
+
+class "Nautilus"
+
+function Nautilus:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Nautilus:LoadSpells()
+    Q = { Range = 1100, Delay = 0.25, Speed = 2000, Width = 90}
+    W = { Range = 0}
+    E = { Range = 600}
+    R = { Range = 825}
+end
+
+["NautilusAnchorDrag"]={charName="Nautilus",slot=_Q,type="linear",speed=2000,range=1100,delay=0.25,radius=90,hitbox=true,aoe=false,cc=true,collision=true},
+
+function Nautilus:LoadMenu()
+	Nautilus = MenuElement({type = MENU, id = "Nautilus", name = "Rugal Aimbot "..myHero.charName})
+	Nautilus:MenuElement({type = MENU, id = "Spells", name = "Spells"})
+    Nautilus.Spells:MenuElement({id = "Q", name = "Q", key = string.byte("Q")})
+    Nautilus.Spells:MenuElement({id = "QSearch", name = "Q Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Nautilus.Spells:MenuElement({id = "W", name = "W", key = string.byte("W")})
+    Nautilus.Spells:MenuElement({id = "E", name = "E", key = string.byte("E")})
+    Nautilus.Spells:MenuElement({id = "R", name = "R", key = string.byte("R")})
+    Nautilus.Spells:MenuElement({id = "RSearch", name = "R Search Range", min = 50, max = 3500, value = 250, step = 10})
+	Nautilus:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Nautilus.Draw:MenuElement({id = "Q", name = "Q range", value = true})
+    Nautilus.Draw:MenuElement({id = "W", name = "W range", value = true})
+    Nautilus.Draw:MenuElement({id = "E", name = "E range", value = true})
+    Nautilus.Draw:MenuElement({id = "R", name = "R range", value = true})
+    Nautilus.Draw:MenuElement({id = "Search", name = "Search ranges", value = false})
+end
+
+function Nautilus:Tick()
+    self:Spells()
+end
+
+function Nautilus:Spells()
+	local target = GetTarget(3500)
+    if Nautilus.Spells.Q:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Nautilus.Spells.QSearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, Q.Range, Q.Delay, Q.Speed, Q.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= Q.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_Q, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_Q, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Nautilus.Spells.R:Value() then
+        if target and GetDistance(target.pos) < R.Range and GetDistance(target.pos,Game.mousePos()) < Nautilus.Spells.RSearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_R, target)
+            EnableOrb(true)
+        end
+    end
+	if Nautilus.Spells.W:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_W)
+        EnableOrb(true)
+    end
+    if Nautilus.Spells.E:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_E)
+        EnableOrb(true)
+    end
+end
+
+function Nautilus:Draw()
+    if myHero.dead then return end
+    if Nautilus.Draw.Q:Value() then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Nautilus.Draw.W:Value() then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if Nautilus.Draw.E:Value() then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    if Nautilus.Draw.R:Value() then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    if Nautilus.Draw.Search:Value() then 
+        Draw.Circle(Game.mousePos(), Nautilus.Spells.QSearch:Value(), 1,  Draw.Color(255, 000, 000, 255))
+        Draw.Circle(Game.mousePos(), Nautilus.Spells.RSearch:Value(), 1,  Draw.Color(255, 255, 000, 000))
+    end
+end
+
+class "Skarner"
+
+function Skarner:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Skarner:LoadSpells()
+    Q = { Range = 350}
+    W = { Range = 0}
+    E = { Range = 1000, Delay = 0.25, Speed = 1500, Width = 70}
+    R = { Range = 350}
+end
+
+function Skarner:LoadMenu()
+	Skarner = MenuElement({type = MENU, id = "Skarner", name = "Rugal Aimbot "..myHero.charName})
+	Skarner:MenuElement({type = MENU, id = "Spells", name = "Spells"})
+    Skarner.Spells:MenuElement({id = "Q", name = "Q", key = string.byte("Q")})
+    Skarner.Spells:MenuElement({id = "W", name = "W", key = string.byte("W")})
+    Skarner.Spells:MenuElement({id = "E", name = "E", key = string.byte("E")})
+    Skarner.Spells:MenuElement({id = "ESearch", name = "E Search Range", min = 50, max = 3500, value = 250, step = 10})
+    Skarner.Spells:MenuElement({id = "R", name = "R", key = string.byte("R")})
+    Skarner.Spells:MenuElement({id = "RSearch", name = "R Search Range", min = 50, max = 3500, value = 250, step = 10})
+	Skarner:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Skarner.Draw:MenuElement({id = "Q", name = "Q range", value = true})
+    Skarner.Draw:MenuElement({id = "W", name = "W range", value = true})
+    Skarner.Draw:MenuElement({id = "E", name = "E range", value = true})
+    Skarner.Draw:MenuElement({id = "R", name = "R range", value = true})
+    Skarner.Draw:MenuElement({id = "Search", name = "Search ranges", value = false})
+end
+
+function Skarner:Tick()
+    self:Spells()
+end
+
+function Skarner:Spells()
+	local target = GetTarget(3500)
+    if Skarner.Spells.E:Value() then
+        if target and HPred:CanTarget(target) and GetDistance(target.pos,Game.mousePos()) < Skarner.Spells.ESearch:Value() then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, E.Range, E.Delay, E.Speed, E.Width, false, nil)
+            if hitChance and hitChance >= 1 and HPred:GetDistance(myHero.pos, aimPosition) <= E.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_E, aimPosition)
+                EnableOrb(true)
+            else
+                EnableOrb(false)
+                Control.CastSpell(HK_E, Game.mousePos())
+                EnableOrb(true)
+            end
+        else
+            EnableOrb(false)
+            Control.CastSpell(HK_E, Game.mousePos())
+            EnableOrb(true)
+        end
+    end
+    if Skarner.Spells.R:Value() then
+        if target and GetDistance(target.pos) < R.Range and GetDistance(target.pos,Game.mousePos()) < Skarner.Spells.RSearch:Value() then
+            EnableOrb(false)
+            Control.CastSpell(HK_R, target)
+            EnableOrb(true)
+        end
+    end
+    if Skarner.Spells.Q:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_Q)
+        EnableOrb(true)
+    end
+	if Skarner.Spells.W:Value() then
+        EnableOrb(false)
+        Control.CastSpell(HK_W)
+        EnableOrb(true)
+    end
+end
+
+function Skarner:Draw()
+    if myHero.dead then return end
+    if Skarner.Draw.Q:Value() then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Skarner.Draw.W:Value() then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if Skarner.Draw.E:Value() then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    if Skarner.Draw.R:Value() then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    if Skarner.Draw.Search:Value() then 
+        Draw.Circle(Game.mousePos(), Skarner.Spells.ESearch:Value(), 1,  Draw.Color(255, 255, 255, 000))
+        Draw.Circle(Game.mousePos(), Skarner.Spells.RSearch:Value(), 1,  Draw.Color(255, 255, 000, 000))
+    end
+end
+
 local loaded = false
 Callback.Add("Load", function()
     if loaded == false then
