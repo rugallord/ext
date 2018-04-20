@@ -232,6 +232,8 @@ end
 function Ahri:LoadMenu()
 	Ahri = MenuElement({type = MENU, id = "Ahri", name = "Rugal Vaper - Ahri"})
     
+    Ahri:MenuElement({id = "Enable", name = "Enable Hero", value = true})
+
     Ahri:MenuElement({type = MENU, id = "Combo", name = "Combo"})
     Ahri.Combo:MenuElement({id = "Q", name = "Q - Orb of Deception", value = true})
     Ahri.Combo:MenuElement({id = "W", name = "W - Fox-Fire", value = true})
@@ -272,6 +274,7 @@ function Ahri:LoadMenu()
 end
 
 function Ahri:Tick()
+    if not Ahri.Enable:Value() then return end
     if Ahri.Harass.T:Value() then
         local Etarget = GetTarget(E.Range)
         if Etarget and Ahri.Harass.AE:Value() then
@@ -402,6 +405,7 @@ function Ahri:CastW()
 end
 
 function Ahri:Draw()
+    if not Ahri.Enable:Value() then return end
     local target = GetTarget(2000)
     if Ahri.dead then return end
     if Ahri.Draw.Q:Value() and Ready(_Q) then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
@@ -448,6 +452,8 @@ end
 
 function DrMundo:LoadMenu()
 	DrMundo = MenuElement({type = MENU, id = "DrMundo", name = "Rugal Vaper - Dr. Mundo"})
+    
+    DrMundo:MenuElement({id = "Enable", name = "Enable Hero", value = true})
     
     DrMundo:MenuElement({type = MENU, id = "Combo", name = "Combo"})
     DrMundo.Combo:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true})
@@ -499,6 +505,7 @@ function DrMundo:LoadMenu()
 end
 
 function DrMundo:Tick()
+    if not DrMundo.Enable:Value() then return end
     if Hp() < DrMundo.Lifesaver.HP:Value() and HeroesAround(1500,myHero.pos) ~= 0 and DrMundo.Lifesaver.R:Value() then
         self:CastR()
     end
@@ -625,6 +632,7 @@ function DrMundo:CastR()
 end
 
 function DrMundo:Draw()
+    if not DrMundo.Enable:Value() then return end
     local target = GetTarget(2000)
     if DrMundo.dead then return end
     if DrMundo.Draw.Q:Value() and Ready(_Q) then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
@@ -685,6 +693,8 @@ end
 function Jayce:LoadMenu()
 	Jayce = MenuElement({type = MENU, id = "Jayce", name = "Rugal Vaper - Jayce"})
     
+    Jayce:MenuElement({id = "Enable", name = "Enable Hero", value = true})
+
     Jayce:MenuElement({type = MENU, id = "Combo", name = "Combo"})
     Jayce.Combo:MenuElement({id = "Q", name = "Q - Shock Blast", value = true})
     Jayce.Combo:MenuElement({id = "W", name = "W - Hyper Charge", value = true})
@@ -734,6 +744,7 @@ function Jayce:LoadMenu()
 end
 
 function Jayce:Tick()
+    if not Jayce.Enable:Value() then return end
     local form = self:CurrentForm()
     if Jayce.Harass.T:Value() then
         if form == "Ranged" then
@@ -933,6 +944,7 @@ function Jayce:CastR()
 end
 
 function Jayce:Draw()
+    if not Jayce.Enable:Value() then return end
     local target = GetTarget(2000)
     if Jayce.dead then return end
     local form = self:CurrentForm()
@@ -986,6 +998,8 @@ end
 function Vladimir:LoadMenu()
 	Vladimir = MenuElement({type = MENU, id = "Vladimir", name = "Rugal Vaper - Vladimir"})
     
+    Vladimir:MenuElement({id = "Enable", name = "Enable Hero", value = true})
+
     Vladimir:MenuElement({type = MENU, id = "Combo", name = "Combo"})
     Vladimir.Combo:MenuElement({id = "Q", name = "Q - Transfusion", value = true})
     Vladimir.Combo:MenuElement({id = "E", name = "E - Tides of Blood", value = true})
@@ -1022,6 +1036,7 @@ function Vladimir:LoadMenu()
 end
 
 function Vladimir:Tick()
+    if not Vladimir.Enable:Value() then return end
     if Vladimir.Harass.T:Value() then
         local Qtarget = GetTarget(Q.Range)
         if Qtarget and Vladimir.Harass.AQ:Value() then
@@ -1100,6 +1115,7 @@ function Vladimir:CastE()
 end
 
 function Vladimir:Draw()
+    if not Vladimir.Enable:Value() then return end
     local target = GetTarget(2000)
     if Vladimir.dead then return end
     if Vladimir.Draw.Q:Value() and Ready(_Q) then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
@@ -1137,6 +1153,8 @@ end
 
 function Utility:Menu()
     Vaper = MenuElement({type = MENU, id = "Vaper", name = "Rugal Vaper - Activator"})
+
+    Vaper:MenuElement({id = "Enable", name = "Enable Activator", value = true})
 
     Vaper:MenuElement({type = MENU, id = "Potion", name = "Potion"})
     Vaper.Potion:MenuElement({id = "CorruptingPotion", name = "Corrupting Potion", value = true})
@@ -1262,6 +1280,7 @@ function Utility:Menu()
 end
 
 function Utility:Tick()
+    if not Vaper.Enable:Value() then return end
     self:Auto()
     self:Cleanse()
     self:Shield()
