@@ -1744,10 +1744,11 @@ function Utility:Cleanse()
     end
 end
 
+local Heroes = {"Ahri","DrMundo","Jayce","Vladimir"}
 local Heroloaded = false
 local ActivatorLoaded = false
 Callback.Add("Load", function()
-    if _G[myHero.charName] and Heroloaded == false then
+    if table.contains(Heroes, myHero.charName) and Heroloaded == false then
         _G[myHero.charName]()
         Heroloaded = true
     end
