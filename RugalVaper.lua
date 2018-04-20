@@ -968,6 +968,166 @@ function Jayce:Draw()
     end
 end
 
+class "Vladimir"
+
+function Vladimir:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Vladimir:LoadSpells()
+    Q = { Range = 600}
+    E = { Range = 600}
+    R = { Range = 700, Delay = 0.4, Speed = mathhuge, Width = 350}
+end
+
+function Vladimir:LoadMenu()
+	Vladimir = MenuElement({type = MENU, id = "Vladimir", name = "Rugal Vaper - Vladimir"})
+    
+    Vladimir:MenuElement({type = MENU, id = "Combo", name = "Combo"})
+    Vladimir.Combo:MenuElement({id = "Q", name = "Q - Transfusion", value = true})
+    Vladimir.Combo:MenuElement({id = "E", name = "E - Tides of Blood", value = true})
+    Vladimir.Combo:MenuElement({id = "R", name = "R - Hemoplague", value = true})
+    Vladimir.Combo:MenuElement({id = "X", name = "R Enemies", value = 2, min = 1, max = 5})
+    
+    Vladimir:MenuElement({type = MENU, id = "Harass", name = "Harass"})
+    Vladimir.Harass:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("S"), toggle = true, value = true})
+    Vladimir.Harass:MenuElement({id = "Q", name = "Q - Transfusion", value = true})
+    Vladimir.Harass:MenuElement({id = "AQ", name = "Auto Q", value = true})
+    Vladimir.Harass:MenuElement({id = "E", name = "E - Tides of Blood", value = true})
+    Vladimir.Harass:MenuElement({id = "R", name = "R - Hemoplague", value = true})
+    Vladimir.Harass:MenuElement({id = "X", name = "R Enemies", value = 2, min = 1, max = 5})
+    
+    Vladimir:MenuElement({type = MENU, id = "Clear", name = "Clear"})
+    Vladimir.Clear:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
+    Vladimir.Clear:MenuElement({id = "Q", name = "Q - Transfusion", value = true})
+    Vladimir.Clear:MenuElement({id = "E", name = "E - Tides of Blood", value = true})
+    
+    Vladimir:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Vladimir.Draw:MenuElement({id = "Q", name = "Q Range", value = true})
+    Vladimir.Draw:MenuElement({id = "E", name = "E Range", value = true})
+    Vladimir.Draw:MenuElement({id = "R", name = "R Range", value = true})
+    Vladimir.Draw:MenuElement({id = "Harass", name = "Harass Status", type = MENU})
+    Vladimir.Draw.Harass:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Vladimir.Draw.Harass:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Vladimir.Draw.Harass:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Vladimir.Draw.Harass:MenuElement({id = "yPos", name = "Text Y Position", value = -140, min = -1000, max = 1000, step = 10})
+    Vladimir.Draw:MenuElement({id = "Clear", name = "Clear Status", type = MENU})
+    Vladimir.Draw.Clear:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Vladimir.Draw.Clear:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Vladimir.Draw.Clear:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Vladimir.Draw.Clear:MenuElement({id = "yPos", name = "Text Y Position", value = -130, min = -1000, max = 1000, step = 10})
+end
+
+function Vladimir:Tick()
+    if Vladimir.Harass.T:Value() then
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Vladimir.Harass.AQ:Value() then
+            self:CastQ(Qtarget)
+        end
+    end
+    local mode = GetMode()
+    if mode == "Combo" then
+        local Rtarget = GetTarget(R.Range)
+        if Rtarget and HeroesAround(R.Width,Rtarget.pos,foe) >= Vladimir.Combo.X:Value() and Vladimir.Combo.R:Value() then
+            self:CastR(Rtarget)
+        end
+        local Etarget = GetTarget(E.Range) 
+        if Etarget and Vladimir.Combo.E:Value() then
+            self:CastE()
+        end
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Vladimir.Combo.Q:Value() then
+            self:CastQ(Qtarget)
+        end
+    end
+    if mode == "Harass" and Vladimir.Harass.T:Value() then
+        local Rtarget = GetTarget(R.Range)
+        if Rtarget and HeroesAround(R.Width,Rtarget.pos,foe) >= Vladimir.Harass.X:Value() and Vladimir.Harass.R:Value() then
+            self:CastR(Rtarget)
+        end
+        local Etarget = GetTarget(E.Range) 
+        if Etarget and Vladimir.Harass.E:Value() then
+            self:CastE()
+        end
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Vladimir.Harass.Q:Value() then
+            self:CastQ(Qtarget)
+        end
+    end
+    if mode == "Clear" and Vladimir.Clear.T:Value() then
+        local Etarget = GetClearMinion(E.Range)
+        if Etarget and Vladimir.Clear.E:Value() then
+            self:CastE()
+        end
+        local Qtarget = GetClearMinion(Q.Range)
+        if Qtarget and Vladimir.Clear.Q:Value() then
+            self:CastQ(Qtarget)
+        end
+    end
+end
+
+function Vladimir:CastR(target,precision)
+    local precision = precision or 1
+	if Ready(_R) and IsUp(_R) then
+        if target and HPred:CanTarget(target) then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, R.Range, R.Delay, R.Speed, R.Width, false, nil)
+            if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= R.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_R, aimPosition)
+                EnableOrb(true)
+            end
+        end
+    end
+end
+
+function Vladimir:CastQ(target)
+	if Ready(_Q) and IsUp(_Q) then
+        EnableOrb(false)
+        Control.CastSpell(HK_Q,target)
+        EnableOrb(true)
+    end
+end
+
+function Vladimir:CastE()
+	if Ready(_E) and IsUp(_E) then
+        EnableOrb(false)
+        Control.CastSpell(HK_E)
+        EnableOrb(true)
+    end
+end
+
+function Vladimir:Draw()
+    local target = GetTarget(2000)
+    if Vladimir.dead then return end
+    if Vladimir.Draw.Q:Value() and Ready(_Q) then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Vladimir.Draw.E:Value() and Ready(_E) then Draw.Circle(myHero.pos, E.Range, 3,  Draw.Color(255, 255, 255, 000)) end
+    if Vladimir.Draw.R:Value() and Ready(_R) then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    local textPos = myHero.pos:To2D()
+    if Vladimir.Draw.Harass.Text:Value() then
+        local size = Vladimir.Draw.Harass.Size:Value()
+	    local xPos = Vladimir.Draw.Harass.xPos:Value()
+	    local yPos = Vladimir.Draw.Harass.yPos:Value()
+        if Vladimir.Harass.T:Value() then
+		    Draw.Text("HARASS ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("HARASS OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+    if Vladimir.Draw.Clear.Text:Value() then
+        local size = Vladimir.Draw.Clear.Size:Value()
+	    local xPos = Vladimir.Draw.Clear.xPos:Value()
+	    local yPos = Vladimir.Draw.Clear.yPos:Value()
+        if Vladimir.Clear.T:Value() then
+		    Draw.Text("CLEAR ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("CLEAR OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+end
+
 class "Utility"
 
 function Utility:__init()
