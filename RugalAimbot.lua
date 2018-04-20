@@ -4822,8 +4822,6 @@ function Nautilus:LoadSpells()
     R = { Range = 825}
 end
 
-["NautilusAnchorDrag"]={charName="Nautilus",slot=_Q,type="linear",speed=2000,range=1100,delay=0.25,radius=90,hitbox=true,aoe=false,cc=true,collision=true},
-
 function Nautilus:LoadMenu()
 	Nautilus = MenuElement({type = MENU, id = "Nautilus", name = "Rugal Aimbot "..myHero.charName})
 	Nautilus:MenuElement({type = MENU, id = "Spells", name = "Spells"})
