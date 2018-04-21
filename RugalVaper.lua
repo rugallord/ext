@@ -640,6 +640,188 @@ function DrMundo:Draw()
     end
 end
 
+class "Hecarim"
+
+function Hecarim:__init()
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Hecarim:LoadSpells()
+    Q = { Range = 350}
+    W = { Range = 575}
+    E = { Range = 800}
+    R = { Range = 1000, Delay = 0.01, Speed = 1100, Width = 230}
+end
+
+function Hecarim:LoadMenu()
+	Hecarim = MenuElement({type = MENU, id = "Hecarim", name = "Rugal Vaper - Hecarim"})
+    
+    Hecarim:MenuElement({id = "Enable", name = "Enable Hero", value = true})
+
+    Hecarim:MenuElement({type = MENU, id = "Combo", name = "Combo"})
+    Hecarim.Combo:MenuElement({id = "Q", name = "Q - Rampage", value = true})
+    Hecarim.Combo:MenuElement({id = "W", name = "W - Spirit of Dread", value = true})
+    Hecarim.Combo:MenuElement({id = "E", name = "E - Devastating Charge", value = true})
+    Hecarim.Combo:MenuElement({id = "R", name = "R - Onslaught of Shadows", value = true})
+    
+    Hecarim:MenuElement({type = MENU, id = "Harass", name = "Harass"})
+    Hecarim.Harass:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("S"), toggle = true, value = true})
+    Hecarim.Harass:MenuElement({id = "Q", name = "Q - Rampage", value = true})
+    Hecarim.Harass:MenuElement({id = "W", name = "W - Spirit of Dread", value = true})
+    Hecarim.Harass:MenuElement({id = "E", name = "E - Devastating Charge", value = true})
+    Hecarim.Harass:MenuElement({id = "R", name = "R - Onslaught of Shadows", value = true})
+    
+    Hecarim:MenuElement({type = MENU, id = "Clear", name = "Clear"})
+    Hecarim.Clear:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
+    Hecarim.Clear:MenuElement({id = "Q", name = "Q - Rampage", value = true})
+    Hecarim.Clear:MenuElement({id = "W", name = "W - Spirit of Dread", value = true})
+
+    Hecarim:MenuElement({type = MENU, id = "Flee", name = "Flee"})
+    Hecarim.Flee:MenuElement({id = "E", name = "E - Devastating Charge", value = true})
+    
+    Hecarim:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
+    Hecarim.Draw:MenuElement({id = "Q", name = "Q Range", value = true})
+    Hecarim.Draw:MenuElement({id = "W", name = "W Range", value = true})
+    Hecarim.Draw:MenuElement({id = "R", name = "R Range", value = true})
+    Hecarim.Draw:MenuElement({id = "Harass", name = "Harass Status", type = MENU})
+    Hecarim.Draw.Harass:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Hecarim.Draw.Harass:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Hecarim.Draw.Harass:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Hecarim.Draw.Harass:MenuElement({id = "yPos", name = "Text Y Position", value = -140, min = -1000, max = 1000, step = 10})
+    Hecarim.Draw:MenuElement({id = "Clear", name = "Clear Status", type = MENU})
+    Hecarim.Draw.Clear:MenuElement({id = "Text", name = "Text Enabled", value = true})
+    Hecarim.Draw.Clear:MenuElement({id = "Size", name = "Text Size", value = 10, min = 1, max = 100})
+    Hecarim.Draw.Clear:MenuElement({id = "xPos", name = "Text X Position", value = -50, min = -1000, max = 1000, step = 10})
+    Hecarim.Draw.Clear:MenuElement({id = "yPos", name = "Text Y Position", value = -130, min = -1000, max = 1000, step = 10})
+end
+
+function Hecarim:Tick()
+    if not Hecarim.Enable:Value() then return end
+    local mode = GetMode()
+    if mode == "Combo" then
+        local Rtarget = GetTarget(R.Range)
+        if Rtarget and Hecarim.Combo.R:Value() then
+            self:CastR(Rtarget)
+        end
+        local Wtarget = GetTarget(W.Range)
+        if Wtarget and Hecarim.Combo.W:Value() then
+            self:CastW()
+        end
+        local Etarget = GetTarget(E.Range)
+        if Etarget and Hecarim.Combo.E:Value() then
+            self:CastE()
+        end
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Hecarim.Combo.Q:Value() then
+            self:CastQ()
+        end
+    end
+    if mode == "Harass" and Hecarim.Harass.T:Value() then
+        local Rtarget = GetTarget(R.Range)
+        if Rtarget and Hecarim.Harass.R:Value() then
+            self:CastR(Rtarget)
+        end
+        local Wtarget = GetTarget(W.Range)
+        if Wtarget and Hecarim.Harass.W:Value() then
+            self:CastW()
+        end
+        local Etarget = GetTarget(E.Range)
+        if Etarget and Hecarim.Harass.E:Value() then
+            self:CastE()
+        end
+        local Qtarget = GetTarget(Q.Range)
+        if Qtarget and Hecarim.Harass.Q:Value() then
+            self:CastQ()
+        end
+    end
+    if mode == "Clear" and Hecarim.Clear.T:Value() then
+        local Etarget = GetClearMinion(W.Range)
+        if Etarget and Hecarim.Clear.W:Value() then
+            self:CastW()
+        end
+        local Qtarget = GetClearMinion(Q.Range)
+        if Qtarget and Hecarim.Clear.Q:Value() then
+            self:CastQ()
+        end
+    end
+    if mode == "Flee" then
+        if Hecarim.Flee.E:Value() then
+            self:CastE()
+        end
+    end
+end
+
+function Hecarim:CastR(target,precision)
+    local precision = precision or 1
+	if Ready(_R) and IsUp(_R) then
+        if target and HPred:CanTarget(target) then
+            local hitChance, aimPosition = HPred:GetHitchance(myHero.pos, target, R.Range, R.Delay, R.Speed, R.Width, false, nil)
+            if hitChance and hitChance >= precision and HPred:GetDistance(myHero.pos, aimPosition) <= R.Range then
+                EnableOrb(false)
+                Control.CastSpell(HK_R, aimPosition)
+                EnableOrb(true)
+            end
+        end
+    end
+end
+
+function Hecarim:CastQ()
+	if Ready(_Q) and IsUp(_Q) then
+        EnableOrb(false)
+        Control.CastSpell(HK_Q)
+        EnableOrb(true)
+    end
+end
+
+function Hecarim:CastW()
+    if Ready(_W) and IsUp(_W) then
+        EnableOrb(false)
+        Control.CastSpell(HK_W)
+        EnableOrb(true)
+    end
+end
+
+function Hecarim:CastE()
+    if Ready(_E) and IsUp(_E) then
+        EnableOrb(false)
+        Control.CastSpell(HK_E)
+        EnableOrb(true)
+    end
+end
+
+function Hecarim:Draw()
+    if not Hecarim.Enable:Value() then return end
+    local target = GetTarget(2000)
+    if Hecarim.dead then return end
+    if Hecarim.Draw.Q:Value() and Ready(_Q) then Draw.Circle(myHero.pos, Q.Range, 3,  Draw.Color(255, 000, 000, 255)) end
+    if Hecarim.Draw.W:Value() and Ready(_W) then Draw.Circle(myHero.pos, W.Range, 3,  Draw.Color(255, 000, 255, 000)) end
+    if Hecarim.Draw.R:Value() and Ready(_R) then Draw.Circle(myHero.pos, R.Range, 3,  Draw.Color(255, 255, 000, 000)) end
+    local textPos = myHero.pos:To2D()
+    if Hecarim.Draw.Harass.Text:Value() then
+        local size = Hecarim.Draw.Harass.Size:Value()
+	    local xPos = Hecarim.Draw.Harass.xPos:Value()
+	    local yPos = Hecarim.Draw.Harass.yPos:Value()
+        if Hecarim.Harass.T:Value() then
+		    Draw.Text("HARASS ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("HARASS OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+    if Hecarim.Draw.Clear.Text:Value() then
+        local size = Hecarim.Draw.Clear.Size:Value()
+	    local xPos = Hecarim.Draw.Clear.xPos:Value()
+	    local yPos = Hecarim.Draw.Clear.yPos:Value()
+        if Hecarim.Clear.T:Value() then
+		    Draw.Text("CLEAR ON", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 000, 255, 000))
+	    else
+            Draw.Text("CLEAR OFF", size, textPos.x + xPos, textPos.y + yPos, Draw.Color(255, 255, 000, 000))
+        end
+    end
+end
+
 class "Jayce"
 
 function Jayce:__init()
@@ -2448,7 +2630,7 @@ function Utility:Cleanse()
     end
 end
 
-local Heroes = {"Ahri","DrMundo","Jayce","Soraka","Tryndamere","Vladimir","Warwick","Zyra"}
+local Heroes = {"Ahri","DrMundo","Hecarim","Jayce","Soraka","Tryndamere","Vladimir","Warwick","Zyra"}
 local Heroloaded = false
 local ActivatorLoaded = false
 Callback.Add("Load", function()
