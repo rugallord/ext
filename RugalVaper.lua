@@ -252,6 +252,10 @@ function Ahri:LoadMenu()
     Ahri.Clear:MenuElement({id = "Q", name = "Q - Orb of Deception", value = true})
     Ahri.Clear:MenuElement({id = "W", name = "W - Fox-Fire", value = true})
     Ahri.Clear:MenuElement({id = "E", name = "E - Charm", value = true})
+
+    Ahri:MenuElement({type = MENU, id = "Flee", name = "Flee"})
+    Ahri.Flee:MenuElement({id = "Q", name = "Q - Orb of Deception", value = true})
+    Ahri.Flee:MenuElement({id = "E", name = "E - Charm", value = true})
     
     Ahri:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
     Ahri.Draw:MenuElement({id = "Q", name = "Q Range", value = true})
@@ -324,6 +328,15 @@ function Ahri:Tick()
             self:CastW()
         end
     end
+    if mode == "Flee" then
+        local Etarget = ClosestHero(E.Range,foe)
+        if Etarget and Ahri.Flee.E:Value() then
+            self:CastE(Etarget)
+        end
+        if Ahri.Flee.Q:Value() then
+            self:FleeQ()
+        end
+    end
 end
 
 function Ahri:CastQ(target,precision)
@@ -378,6 +391,15 @@ function Ahri:CastW()
 	if Ready(_W) and IsUp(_W) then
         EnableOrb(false)
         Control.CastSpell(HK_W)
+        EnableOrb(true)
+    end
+end
+
+function Ahri:FleeQ()
+	if Ready(_Q) and IsUp(_Q) then
+        local flee = myHero.pos:Extend(Game.cursorPos(), -200)
+        EnableOrb(false)
+        Control.CastSpell(HK_Q, flee)
         EnableOrb(true)
     end
 end
@@ -450,6 +472,9 @@ function DrMundo:LoadMenu()
     DrMundo.Clear:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true})
     DrMundo.Clear:MenuElement({id = "W", name = "W - Burning Agony", value = true})
     DrMundo.Clear:MenuElement({id = "E", name = "E - Masochism", value = true})
+
+    DrMundo:MenuElement({type = MENU, id = "Flee", name = "Flee"})
+    DrMundo.Flee:MenuElement({id = "Q", name = "Q - Infected Cleaver", value = true})
     
     DrMundo:MenuElement({type = MENU, id = "Lifesaver", name = "Life Saver"})
     DrMundo.Lifesaver:MenuElement({id = "R", name = "R - Sadism", value = true})
@@ -527,6 +552,12 @@ function DrMundo:Tick()
         local Etarget = GetClearMinion(E.Range)
         if Etarget and DrMundo.Clear.E:Value() then
             self:CastE()
+        end
+    end
+    if mode == "Flee" then
+        local Qtarget = ClosestHero(Q.Range,foe)
+        if Qtarget and DrMundo.Flee.Q:Value() then
+            self:CastQ(Qtarget)
         end
     end
 end
@@ -661,6 +692,10 @@ function Jayce:LoadMenu()
     Jayce.Clear:MenuElement({id = "Q2", name = "Q - To the Skies!", value = true})
     Jayce.Clear:MenuElement({id = "W2", name = "W - Lightning Field", value = true})
     Jayce.Clear:MenuElement({id = "E2", name = "E - Thundering Blow", value = true})
+
+    Jayce:MenuElement({type = MENU, id = "Flee", name = "Flee"})
+    Jayce.Flee:MenuElement({id = "E", name = "E - Acceleration Gate", value = true})
+    Jayce.Flee:MenuElement({id = "E2", name = "E - Thundering Blow", value = true})
     
     Jayce:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
     Jayce.Draw:MenuElement({id = "Q", name = "Q Range", value = true})
@@ -778,6 +813,19 @@ function Jayce:Tick()
             local Qtarget = GetClearMinion(Q2.Range)
             if Qtarget and Jayce.Clear.Q2:Value() then
                 self:CastQ2(Qtarget)
+            end
+        end
+    end
+    if mode == "Flee" then
+        if form == "Ranged" then
+            if Jayce.Flee.E:Value() then
+                local fleeE = myHero.pos:Extend(Game.cursorPos(), 200)
+                self:CastE(fleeE)
+            end
+        else
+            local Etarget = ClosestHero(E2.Range,foe)
+            if Etarget and Jayce.Flee.E2:Value() then
+                self:CastE2(Etarget)
             end
         end
     end
@@ -1110,6 +1158,9 @@ function Tryndamere:LoadMenu()
     Tryndamere:MenuElement({type = MENU, id = "Clear", name = "Clear"})
     Tryndamere.Clear:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
     Tryndamere.Clear:MenuElement({id = "E", name = "E - Spinning Slash", value = true})
+
+    Tryndamere:MenuElement({type = MENU, id = "Flee", name = "Flee"})
+    Tryndamere.Flee:MenuElement({id = "E", name = "E - Spinning Slash", value = true})
     
     Tryndamere:MenuElement({type = MENU, id = "Lifesaver", name = "Life Saver"})
     Tryndamere.Lifesaver:MenuElement({id = "Q", name = "Q - Bloodlust", value = true})
@@ -1172,12 +1223,26 @@ function Tryndamere:Tick()
             self:CastE(Etarget)
         end
     end
+    if mode == "Flee" then
+        if Tryndamere.Flee.E:Value() then
+            self:FleeE()
+        end
+    end
 end
 
 function Tryndamere:CastW()
 	if Ready(_W) and IsUp(_W) then
         EnableOrb(false)
         Control.CastSpell(HK_W)
+        EnableOrb(true)
+    end
+end
+
+function Tryndamere:FleeE()
+	if Ready(_E) and IsUp(_E) then
+        local flee = myHero.pos:Extend(Game.cursorPos(), E.Range)
+        EnableOrb(false)
+        Control.CastSpell(HK_E,flee)
         EnableOrb(true)
     end
 end
@@ -1443,6 +1508,9 @@ function Warwick:LoadMenu()
     Warwick:MenuElement({type = MENU, id = "Clear", name = "Clear"})
     Warwick.Clear:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
     Warwick.Clear:MenuElement({id = "Q", name = "Q - Jaws of the Beast", value = true})
+
+    Warwick:MenuElement({type = MENU, id = "Flee", name = "Flee"})
+    Warwick.Flee:MenuElement({id = "E", name = "E - Primal Howl", value = true})
     
     Warwick:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
     Warwick.Draw:MenuElement({id = "Q", name = "Q Range", value = true})
@@ -1496,6 +1564,12 @@ function Warwick:Tick()
         local Qtarget = GetClearMinion(Q.Range)
         if Qtarget and Warwick.Clear.Q:Value() then
             self:CastQ(Qtarget)
+        end
+    end
+    if mode == "Flee" then
+        local Etarget = ClosestHero(E.Range,foe) 
+        if Etarget and Warwick.Flee.E:Value() then
+            self:CastE()
         end
     end
 end
@@ -1604,6 +1678,9 @@ function Zyra:LoadMenu()
     Zyra.Clear:MenuElement({id = "T", name = "Toggle Spells", key = string.byte("A"), toggle = true, value = true})
     Zyra.Clear:MenuElement({id = "Q", name = "Q - Deadly Spines", value = true})
     Zyra.Clear:MenuElement({id = "E", name = "E - Grasping Roots", value = true})
+
+    Zyra:MenuElement({type = MENU, id = "Flee", name = "Flee"})
+    Zyra.Flee:MenuElement({id = "E", name = "E - Grasping Roots", value = true})
     
     Zyra:MenuElement({type = MENU, id = "Draw", name = "Drawings"})
     Zyra.Draw:MenuElement({id = "Q", name = "Q Range", value = true})
@@ -1670,6 +1747,12 @@ function Zyra:Tick()
         local Qtarget = GetClearMinion(Q.Range)
         if Qtarget and Zyra.Clear.Q:Value() then
             self:CastQ(Qtarget)
+        end
+    end
+    if mode == "Flee" then
+        local Etarget = ClosestHero(E.Range,foe) 
+        if Etarget and Zyra.Flee.E:Value() then
+            self:CastE(Etarget)
         end
     end
 end
