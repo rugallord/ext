@@ -1186,7 +1186,7 @@ end
 function Soraka:Tick()
     if not Soraka.Enable:Value() then return end
     local Wtarget = ClosestInjuredHero(W.Range,friend,Soraka.Lifesaver.WHP:Value(),false)
-    if Wtarget and HeroesAround(1500,Wtarget.pos) ~= 0 and Soraka.Lifesaver.W:Value() and Hp() > Soraka.Lifesaver.SHP:Value() then
+    if Wtarget and not Wtarget.isMe and HeroesAround(1500,Wtarget.pos) ~= 0 and Soraka.Lifesaver.W:Value() and Hp() > Soraka.Lifesaver.SHP:Value() then
         self:CastW(Wtarget)
     end
     local Rtarget = ClosestInjuredHero(R.Range,friend,Soraka.Lifesaver.HP:Value(),true)
@@ -1266,6 +1266,14 @@ function Soraka:CastQMinion(target)
             local pred = target:GetPrediction(Q.Speed, Q.Delay)
             Control.CastSpell(HK_Q, pred)
         end
+    end
+end
+
+function Soraka:CastR()
+	if Ready(_R) and IsUp(_R) then
+        EnableOrb(false)
+        Control.CastSpell(HK_R)
+        EnableOrb(true)
     end
 end
 
