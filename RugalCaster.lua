@@ -1342,7 +1342,7 @@ local loaded = false
 Callback.Add("Load", function()
     if loaded == false then
         Helper()
-        Utility()
+        --Utility()
         loaded = true
     end
 end)
